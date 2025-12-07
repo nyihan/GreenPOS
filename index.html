@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ko Nyi POS</title>
     <meta name="theme-color" content="#43a047">
 
@@ -10,700 +11,1504 @@
 
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          rel="stylesheet">
 
     <style>
-        :root { --primary: #43a047; --primary-dark: #2e7d32; --bg: #f5f5f5; --text: #212121; --white: #ffffff; --accent: #ff9800; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Pyidaungsu", sans-serif; background: var(--bg); color: var(--text); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        :root {
+            --primary: #43a047;
+            --primary-dark: #2e7d32;
+            --bg: #f5f5f5;
+            --text: #212121;
+            --white: #ffffff;
+            --accent: #ff9800;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Pyidaungsu", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
         /* HEADER & DRAWER */
-        .drawer-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; display: none; }
-        .drawer-backdrop.open { display: block; }
-        .drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; }
-        .drawer.open { left: 0; }
-        .drawer-head { background: var(--primary); height: 120px; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: flex-end; }
-        .drawer-list { flex: 1; overflow-y: auto; padding-top: 10px; }
-        .drawer-item { padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px; cursor: pointer; color: #444; font-weight: 500; }
-        .drawer-item.active { background: #e8f5e9; color: var(--primary); }
-        .drawer-foot { padding: 15px; text-align: center; font-size: 11px; color: #999; border-top: 1px solid #eee; }
+        .drawer-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+            display: none;
+        }
+
+        .drawer-backdrop.open {
+            display: block;
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background: white;
+            z-index: 100;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .drawer.open {
+            left: 0;
+        }
+
+        .drawer-head {
+            background: var(--primary);
+            height: 120px;
+            padding: 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .drawer-list {
+            flex: 1;
+            overflow-y: auto;
+            padding-top: 10px;
+        }
+
+        .drawer-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            color: #444;
+            font-weight: 500;
+        }
+
+        .drawer-item.active {
+            background: #e8f5e9;
+            color: var(--primary);
+        }
+
+        .drawer-foot {
+            padding: 15px;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            border-top: 1px solid #eee;
+        }
 
         /* TOP NAV */
-        .top { background: var(--primary); color: white; height: 56px; display: flex; align-items: center; padding: 0 10px; gap: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 50; flex-shrink: 0; }
-        .top-btn { background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 8px; }
-        .top-title { font-size: 18px; font-weight: bold; line-height: 1.2; }
-        .top-sub { font-size: 12px; opacity: 0.8; }
+        .top {
+            background: var(--primary);
+            color: white;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 50;
+            flex-shrink: 0;
+        }
+
+        .top-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .top-title {
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .top-sub {
+            font-size: 12px;
+            opacity: 0.8;
+        }
 
         /* LAYOUT */
-        .content { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
-        .screen { display: none; flex-direction: column; height: 100%; width: 100%; }
-        .screen.active { display: flex; }
+        .content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+        }
+
+        .screen.active {
+            display: flex;
+        }
 
         /* POS SCREEN STYLES */
-        .pos-top-bar { padding: 8px 10px; background: white; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 3px rgba(0,0,0,0.05); z-index: 20; flex-shrink: 0; }
-        .cat-selector { border: 1px solid #ddd; padding: 8px; border-radius: 4px; background: white; width: 35%; max-width: 120px; font-size: 13px;}
-        .search-wrap { flex: 1; position: relative; display: flex; align-items: center; background: #f1f1f1; border-radius: 20px; padding: 0 10px; border: 1px solid #ddd; }
-        .search-input { width: 100%; padding: 10px; border: none; background: transparent; outline: none; font-size: 14px; }
-        .barcode-btn { font-size: 20px; color: #666; padding: 5px; cursor: pointer; margin-left: 5px; }
-        .barcode-btn:active { color: var(--primary); }
-
-        .pos-main { flex: 1; display: flex; overflow: hidden; background: #f0f2f5; position: relative; }
-        
-        /* Product Grid (Left Side) - IMPORTANT FIX HERE */
-        .product-grid { 
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 8px; 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); 
-            gap: 8px; 
-            align-content: flex-start; 
-            /* Added extra padding so items can scroll above the button */
-            padding-bottom: 120px; 
+        .pos-top-bar {
+            padding: 8px 10px;
+            background: white;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+            z-index: 20;
+            flex-shrink: 0;
         }
-        .p-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.1); cursor: pointer; display: flex; flex-direction: column; height: 95px; border: 1px solid #eee; }
-        .p-card:active { transform: scale(0.95); }
-        .p-strip { height: 4px; }
-        .p-name { font-size: 11px; font-weight: 600; padding: 5px; flex: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.2; }
-        .p-cat { font-size: 9px; color: #888; padding: 0 5px; }
-        .p-price { font-size: 11px; font-weight: bold; color: var(--primary); padding: 2px 5px 5px; text-align: right; }
+
+        .cat-selector {
+            border: 1px solid #ddd;
+            padding: 8px;
+            border-radius: 4px;
+            background: white;
+            width: 35%;
+            max-width: 120px;
+            font-size: 13px;
+        }
+
+        .search-wrap {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #f1f1f1;
+            border-radius: 20px;
+            padding: 0 10px;
+            border: 1px solid #ddd;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .barcode-btn {
+            font-size: 20px;
+            color: #666;
+            padding: 5px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .barcode-btn:active {
+            color: var(--primary);
+        }
+
+        .pos-main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            background: #f0f2f5;
+            position: relative;
+        }
+
+        /* Product Grid (Left Side) */
+        .product-grid {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+            gap: 8px;
+            align-content: flex-start;
+            padding-bottom: 120px;
+        }
+
+        .p-card {
+            background: white;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 95px;
+            border: 1px solid #eee;
+        }
+
+        .p-card:active {
+            transform: scale(0.95);
+        }
+
+        .p-strip {
+            height: 4px;
+        }
+
+        .p-name {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px;
+            flex: 1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.2;
+        }
+
+        .p-cat {
+            font-size: 9px;
+            color: #888;
+            padding: 0 5px;
+        }
+
+        .p-price {
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--primary);
+            padding: 2px 5px 5px;
+            text-align: right;
+        }
 
         /* Ticket Side Panel (Right Side) */
-        .ticket-wrap { 
-            width: 38%; 
-            min-width: 130px; 
-            max-width: 350px; 
-            background: white; 
-            border-left: 1px solid #ddd; 
-            display: flex; 
-            flex-direction: column; 
-            z-index: 30; 
+        .ticket-wrap {
+            width: 38%;
+            min-width: 130px;
+            max-width: 350px;
+            background: white;
+            border-left: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            z-index: 30;
             height: 100%;
-            flex-shrink: 0; 
+            flex-shrink: 0;
         }
 
-        .ticket { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .ticket-head { padding: 8px; background: #f9f9f9; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-weight: bold; font-size: 12px; }
-        .ticket-list { flex: 1; overflow-y: auto; padding: 0; padding-bottom: 90px; background: #fff; }
-        .ticket-empty { padding: 20px; text-align: center; color: #999; font-size: 11px; font-style: italic; margin-top: 50px;}
-        
-        .t-row { padding: 6px; border-bottom: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 2px; }
-        .t-top { display: flex; justify-content: space-between; align-items: flex-start; }
-        .t-name { font-size: 12px; font-weight: 600; width: 100%; line-height: 1.2; }
-        .t-meta { font-size: 10px; color: #666; }
-        
-        .t-ctrl { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
-        .qty { display: flex; align-items: center; background: #f0f0f0; border-radius: 12px; }
-        .qty-btn { border: none; background: none; padding: 2px 8px; font-size: 14px; cursor: pointer; color: #555; }
-        .qty-val { font-size: 12px; font-weight: bold; min-width: 15px; text-align: center; }
-        .t-amt { font-weight: bold; font-size: 12px; color: var(--text); }
-
-        /* FLOATING CHARGE BUTTON - FIXED POSITIONING */
-        .charge-container { 
-            position: absolute; 
-            bottom: 20px; 
-            left: 0; 
-            /* Restrict width to avoid covering ticket panel completely if desired, or keep 100% of pos-main */
-            width: 100%; 
-            display: flex; 
-            justify-content: center; 
-            pointer-events: none; 
-            z-index: 100; /* High Z-Index to stay on top */
+        .ticket {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
-        .charge-btn { pointer-events: auto; background: var(--primary); color: white; border-radius: 50px; padding: 12px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 15px; cursor: pointer; transition: transform 0.1s; border: none; min-width: 180px; justify-content: center; }
-        .charge-btn:active { transform: scale(0.95); }
-        .charge-txt { font-weight: bold; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .charge-badge { background: rgba(255,255,255,0.25); padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; min-width: 50px; text-align: center; }
+
+        .ticket-head {
+            padding: 8px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .ticket-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+            padding-bottom: 90px;
+            background: #fff;
+        }
+
+        .ticket-empty {
+            padding: 20px;
+            text-align: center;
+            color: #999;
+            font-size: 11px;
+            font-style: italic;
+            margin-top: 50px;
+        }
+
+        .t-row {
+            padding: 6px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .t-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .t-name {
+            font-size: 12px;
+            font-weight: 600;
+            width: 100%;
+            line-height: 1.2;
+        }
+
+        .t-meta {
+            font-size: 10px;
+            color: #666;
+        }
+
+        .t-ctrl {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2px;
+        }
+
+        .qty {
+            display: flex;
+            align-items: center;
+            background: #f0f0f0;
+            border-radius: 12px;
+        }
+
+        .qty-btn {
+            border: none;
+            background: none;
+            padding: 2px 8px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .qty-val {
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 15px;
+            text-align: center;
+        }
+
+        .t-amt {
+            font-weight: bold;
+            font-size: 12px;
+            color: var(--text);
+        }
+
+        /* FLOATING CHARGE BUTTON */
+        .charge-container {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .charge-btn {
+            pointer-events: auto;
+            background: var(--primary);
+            color: white;
+            border-radius: 50px;
+            padding: 12px 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            border: none;
+            min-width: 180px;
+            justify-content: center;
+        }
+
+        .charge-btn:active {
+            transform: scale(0.95);
+        }
+
+        .charge-txt {
+            font-weight: bold;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .charge-badge {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 50px;
+            text-align: center;
+        }
 
         /* GENERAL LISTS */
-        .card { background: white; margin: 10px; padding: 10px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
-        .s-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 5px; }
-        .hint { font-size: 12px; color: #888; }
-        .btn-outline { border: 1px solid var(--primary); color: var(--primary); background: white; padding: 6px 12px; border-radius: 4px; font-size: 13px; cursor: pointer; }
-        
-        .row-item, .row-cat, .row-rec { padding: 12px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .row-title { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
-        .chip { background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #555; margin-right: 5px; }
-        .right { text-align: right; font-size: 12px; }
+        .card {
+            background: white;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .s-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            background: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .row-item,
+        .row-cat,
+        .row-rec {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .row-title {
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .chip {
+            background: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: #555;
+            margin-right: 5px;
+        }
+
+        .right {
+            text-align: right;
+            font-size: 12px;
+        }
 
         /* History Grouping */
-        .group-header { background: #e8f5e9; padding: 8px 12px; font-size: 12px; font-weight: bold; color: var(--primary-dark); border-bottom: 1px solid #c8e6c9; margin-top: 0; position: sticky; top:0; }
+        .group-header {
+            background: #e8f5e9;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--primary-dark);
+            border-bottom: 1px solid #c8e6c9;
+            margin-top: 0;
+            position: sticky;
+            top: 0;
+        }
 
         /* TABS */
-        .tab { display: flex; border-bottom: 1px solid #ddd; background: white; }
-        .tab button { flex: 1; padding: 12px; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; font-weight: 500; color: #666; }
-        .tab button.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .tab {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            background: white;
+        }
+
+        .tab button {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .tab button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
 
         /* OVERLAYS & FORMS */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; display: none; justify-content: center; align-items: flex-end; }
-        .overlay.show { display: flex; }
-        .ov-panel { background: white; width: 100%; max-width: 500px; border-radius: 12px 12px 0 0; display: flex; flex-direction: column; max-height: 90vh; animation: slideUp 0.2s; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        
-        .ov-head { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .ov-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #888; }
-        .ov-body { padding: 20px; overflow-y: auto; flex: 1; }
-        .ov-foot { padding: 15px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 10px; }
-        
-        .form .fg { margin-bottom: 15px; }
-        .form label { display: block; font-size: 12px; font-weight: bold; color: #666; margin-bottom: 5px; }
-        .form input, .form select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 15px; box-sizing: border-box; }
-        .form input:focus { border-color: var(--primary); outline: none; }
-        .form-row { display: flex; gap: 10px; }
-        .form-row .fg { flex: 1; }
-        
-        .btn { padding: 10px 20px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-danger { background: #e53935; color: white; }
-        .btn-ghost { background: #eee; color: #333; }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+        }
 
-        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #323232; color: white; padding: 10px 20px; border-radius: 50px; font-size: 13px; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; white-space: nowrap; }
-        .toast.show { opacity: 1; bottom: 100px; }
+        .overlay.show {
+            display: flex;
+        }
+
+        .ov-panel {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            animation: slideUp 0.2s;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .ov-head {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ov-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .ov-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .ov-foot {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .form .fg {
+            margin-bottom: 15px;
+        }
+
+        .form label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .form input,
+        .form select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .form input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-row .fg {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e53935;
+            color: white;
+        }
+
+        .btn-ghost {
+            background: #eee;
+            color: #333;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #323232;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 13px;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            bottom: 100px;
+        }
 
         /* SCANNER VIEW */
-        #scanner-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 300; display: none; flex-direction: column; justify-content: center; }
-        .close-scan { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; z-index: 301; padding:10px; background:rgba(0,0,0,0.3); border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
+        #scanner-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 300;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .close-scan {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 301;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* LOADING OVERLAY */
+        .loading-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 400;
+        }
+
+        .loading-backdrop.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid #ccc;
+            border-top-color: var(--primary);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
 <div class="app">
-  <div id="drawerBackdrop" class="drawer-backdrop"></div>
-  <div id="drawer" class="drawer">
-    <div class="drawer-head">
-      <b>GreenPOS</b><br><small>Google Sheets • Ks</small>
-    </div>
-    <div class="drawer-list">
-      <div class="drawer-item active" data-screen="pos"><i class="fa-solid fa-cash-register"></i>POS (Sales)</div>
-      <div class="drawer-item" data-screen="items"><i class="fa-solid fa-boxes-stacked"></i>Items</div>
-      <div class="drawer-item" data-screen="receipts"><i class="fa-solid fa-receipt"></i>Receipts</div>
-      <div class="drawer-item" id="navExit"><i class="fa-solid fa-right-from-bracket"></i>Exit</div>
-    </div>
-    <div class="drawer-foot">Connected to Google Sheets</div>
-  </div>
-
-  <div class="top">
-    <button id="btnMenu" class="top-btn"><i class="fa-solid fa-bars"></i></button>
-    <div>
-      <div id="topTitle" class="top-title">Ticket</div>
-      <div id="topSub" class="top-sub">POS</div>
-    </div>
-  </div>
-
-  <div class="content">
-    <div id="scr-pos" class="screen active">
-      <div class="pos-top-bar">
-        <select id="filterCat" class="cat-selector">
-          <option value="">All</option>
-        </select>
-        <div class="search-wrap">
-          <input id="txtSearch" class="search-input" placeholder="Search / barcode" />
-          <i id="btnScan" class="fa-solid fa-barcode barcode-btn"></i>
+    <div id="drawerBackdrop" class="drawer-backdrop"></div>
+    <div id="drawer" class="drawer">
+        <div class="drawer-head">
+            <b>GreenPOS</b><br><small>Google Sheets • Ks</small>
         </div>
-      </div>
-      
-      <div class="pos-main">
-        <div id="gridItems" class="product-grid"></div>
-        
-        <div class="ticket-wrap">
-          <div class="ticket">
-            <div class="ticket-head">
-              <span>Ticket</span>
-              <span id="lblTicketTotal">Ks 0</span>
-            </div>
-            <div id="ticketList" class="ticket-list">
-              <div class="ticket-empty">Tap item to add.</div>
-            </div>
-          </div>
+        <div class="drawer-list">
+            <div class="drawer-item active" data-screen="pos"><i class="fa-solid fa-cash-register"></i>POS (Sales)</div>
+            <div class="drawer-item" data-screen="items"><i class="fa-solid fa-boxes-stacked"></i>Items</div>
+            <div class="drawer-item" data-screen="receipts"><i class="fa-solid fa-receipt"></i>Receipts</div>
+            <div class="drawer-item" id="navExit"><i class="fa-solid fa-right-from-bracket"></i>Exit</div>
         </div>
-      </div>
-      
-      <div class="charge-container">
-        <button id="btnCharge" class="charge-btn">
-            <span class="charge-txt">Charge</span>
-            <span id="lblChargeBadge" class="charge-badge">Ks 0</span>
-        </button>
-      </div>
+        <div class="drawer-foot">Connected to Google Sheets</div>
     </div>
 
-    <div id="scr-items" class="screen">
-      <div class="s-head">
-        <span>Inventory</span>
-        <small id="lblItemsCount">0 items</small>
-      </div>
-      <div class="tab">
-        <button id="tabItems" class="active">Items</button>
-        <button id="tabCats">Categories</button>
-      </div>
-
-      <div id="tabItemsPane" class="card">
-         <div class="s-head">
-            <span class="hint">Tap to edit.</span>
-            <button id="btnNewItem" class="btn-outline"><i class="fa-solid fa-plus"></i> New</button>
-         </div>
-         <div id="listItems"></div>
-      </div>
-
-      <div id="tabCatsPane" class="card" style="display:none">
-         <div class="s-head">
-            <span class="hint">Tap to edit.</span>
-            <button id="btnNewCat" class="btn-outline"><i class="fa-solid fa-plus"></i> New</button>
-         </div>
-         <div id="listCats"></div>
-      </div>
+    <div class="top">
+        <button id="btnMenu" class="top-btn"><i class="fa-solid fa-bars"></i></button>
+        <div>
+            <div id="topTitle" class="top-title">Ticket</div>
+            <div id="topSub" class="top-sub">POS</div>
+        </div>
     </div>
 
-    <div id="scr-receipts" class="screen">
-      <div class="s-head">
-        <span>Receipts</span>
-        <small>History</small>
-      </div>
-      <div class="card">
-        <div class="hint" style="margin-bottom:10px">Tap to view details.</div>
-        <div id="listReceipts"></div>
-      </div>
+    <div class="content">
+        <div id="scr-pos" class="screen active">
+            <div class="pos-top-bar">
+                <select id="filterCat" class="cat-selector">
+                    <option value="">All</option>
+                </select>
+                <div class="search-wrap">
+                    <input id="txtSearch" class="search-input" placeholder="Search / barcode"/>
+                    <i id="btnScan" class="fa-solid fa-barcode barcode-btn"></i>
+                </div>
+            </div>
+
+            <div class="pos-main">
+                <div id="gridItems" class="product-grid"></div>
+
+                <div class="ticket-wrap">
+                    <div class="ticket">
+                        <div class="ticket-head">
+                            <span>Ticket</span>
+                            <span id="lblTicketTotal">Ks 0</span>
+                        </div>
+                        <div id="ticketList" class="ticket-list">
+                            <div class="ticket-empty">Tap item to add.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charge-container">
+                    <button id="btnCharge" class="charge-btn">
+                        <span class="charge-txt">Charge</span>
+                        <span id="lblChargeBadge" class="charge-badge">Ks 0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="scr-items" class="screen">
+            <div class="s-head">
+                <span>Inventory</span>
+                <small id="lblItemsCount">0 items</small>
+            </div>
+            <div class="tab">
+                <button id="tabItems" class="active">Items</button>
+                <button id="tabCats">Categories</button>
+            </div>
+
+            <div id="tabItemsPane" class="card">
+                <div class="s-head">
+                    <span class="hint">Tap to edit.</span>
+                    <button id="btnNewItem" class="btn-outline"><i class="fa-solid fa-plus"></i> New</button>
+                </div>
+                <div id="listItems"></div>
+            </div>
+
+            <div id="tabCatsPane" class="card" style="display:none">
+                <div class="s-head">
+                    <span class="hint">Tap to edit.</span>
+                    <button id="btnNewCat" class="btn-outline"><i class="fa-solid fa-plus"></i> New</button>
+                </div>
+                <div id="listCats"></div>
+            </div>
+        </div>
+
+        <div id="scr-receipts" class="screen">
+            <div class="s-head">
+                <span>Receipts</span>
+                <small>History</small>
+            </div>
+            <div class="card">
+                <div class="hint" style="margin-bottom:10px">Tap to view details.</div>
+                <div id="listReceipts"></div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <div id="ovItem" class="overlay">
-  <div class="ov-panel">
-    <div class="ov-head">
-      <b id="ovItemTitle">Item</b>
-      <button class="ov-close" data-close="ovItem">&times;</button>
+    <div class="ov-panel">
+        <div class="ov-head">
+            <b id="ovItemTitle">Item</b>
+            <button class="ov-close" data-close="ovItem">&times;</button>
+        </div>
+        <div class="ov-body">
+            <div class="form">
+                <div class="fg">
+                    <label>Name</label>
+                    <input id="fName"/>
+                </div>
+                <div class="fg">
+                    <label>Category</label>
+                    <input id="fCat" list="dlCats"/>
+                    <datalist id="dlCats"></datalist>
+                </div>
+                <div class="form-row">
+                    <div class="fg">
+                        <label>Cost</label>
+                        <input id="fCost" type="number"/>
+                    </div>
+                    <div class="fg">
+                        <label>Price</label>
+                        <input id="fPrice" type="number"/>
+                    </div>
+                </div>
+                <div class="fg">
+                    <label>Barcode</label>
+                    <input id="fBarcode"/>
+                </div>
+                <div id="lblMargin" class="hint" style="text-align:right"></div>
+            </div>
+        </div>
+        <div class="ov-foot">
+            <button id="btnDelItem" class="btn btn-danger" style="display:none">Delete</button>
+            <button id="btnSaveItem" class="btn btn-primary">Save</button>
+        </div>
     </div>
-    <div class="ov-body">
-      <div class="form">
-        <div class="fg">
-          <label>Name</label>
-          <input id="fName" />
-        </div>
-        <div class="fg">
-          <label>Category</label>
-          <input id="fCat" list="dlCats" />
-          <datalist id="dlCats"></datalist>
-        </div>
-        <div class="form-row">
-          <div class="fg">
-            <label>Cost</label>
-            <input id="fCost" type="number" />
-          </div>
-          <div class="fg">
-            <label>Price</label>
-            <input id="fPrice" type="number" />
-          </div>
-        </div>
-        <div class="fg">
-          <label>Barcode</label>
-          <input id="fBarcode" />
-        </div>
-        <div id="lblMargin" class="hint" style="text-align:right"></div>
-      </div>
-    </div>
-    <div class="ov-foot">
-      <button id="btnDelItem" class="btn btn-danger" style="display:none">Delete</button>
-      <button id="btnSaveItem" class="btn btn-primary">Save</button>
-    </div>
-  </div>
 </div>
 
 <div id="ovCat" class="overlay">
-  <div class="ov-panel">
-    <div class="ov-head">
-      <b id="ovCatTitle">Category</b>
-      <button class="ov-close" data-close="ovCat">&times;</button>
-    </div>
-    <div class="ov-body">
-      <div class="form">
-        <div class="fg">
-          <label>Name</label>
-          <input id="cName" />
+    <div class="ov-panel">
+        <div class="ov-head">
+            <b id="ovCatTitle">Category</b>
+            <button class="ov-close" data-close="ovCat">&times;</button>
         </div>
-        <div class="fg">
-          <label>Color</label>
-          <input id="cColor" type="color" value="#43a047" style="height:40px"/>
+        <div class="ov-body">
+            <div class="form">
+                <div class="fg">
+                    <label>Name</label>
+                    <input id="cName"/>
+                </div>
+                <div class="fg">
+                    <label>Color</label>
+                    <input id="cColor" type="color" value="#43a047" style="height:40px"/>
+                </div>
+            </div>
         </div>
-      </div>
+        <div class="ov-foot">
+            <button id="btnDelCat" class="btn btn-danger" style="display:none">Delete</button>
+            <button id="btnSaveCat" class="btn btn-primary">Save</button>
+        </div>
     </div>
-    <div class="ov-foot">
-      <button id="btnDelCat" class="btn btn-danger" style="display:none">Delete</button>
-      <button id="btnSaveCat" class="btn btn-primary">Save</button>
-    </div>
-  </div>
 </div>
 
 <div id="ovRec" class="overlay">
-  <div class="ov-panel">
-    <div class="ov-head">
-      <b id="ovRecTitle">Receipt</b>
-      <button class="ov-close" data-close="ovRec">&times;</button>
+    <div class="ov-panel">
+        <div class="ov-head">
+            <b id="ovRecTitle">Receipt</b>
+            <button class="ov-close" data-close="ovRec">&times;</button>
+        </div>
+        <div id="historyRcpContent" style="background:white; padding:10px;">
+            <div id="ovRecBody"></div>
+        </div>
+        <div class="ov-foot">
+            <button id="btnDelRec" class="btn btn-danger" style="margin-right:auto" onclick="deleteRec()">Delete</button>
+            <button class="btn btn-primary" onclick="downloadHistoryJPG()">Save JPG</button>
+            <button class="btn btn-ghost" data-close="ovRec">Close</button>
+        </div>
     </div>
-    <div id="historyRcpContent" style="background:white; padding:10px;">
-        <div id="ovRecBody"></div>
-    </div>
-    <div class="ov-foot">
-      <button class="btn btn-danger" style="margin-right:auto" onclick="deleteRec()">Delete</button>
-      <button class="btn btn-primary" onclick="downloadHistoryJPG()">Save JPG</button>
-      <button class="btn btn-ghost" data-close="ovRec">Close</button>
-    </div>
-  </div>
 </div>
 
 <div id="ovReceiptModal" class="overlay">
-  <div class="ov-panel" style="max-width: 320px; border-radius: 8px; overflow: hidden; background: #f5f5f5;">
-    
-    <div id="receiptContent" style="background:white; padding: 25px 20px;">
-        <h3 style="margin:0 0 10px 0; text-align:center; font-weight:900; letter-spacing:1px; text-transform:uppercase;">MY SHOP</h3>
-        <div style="text-align:center; font-size:12px; color:#555; margin-bottom:15px;">
-            <span id="rcpDate"></span><br>
-            Invoice: <span id="rcpInv"></span>
-        </div>
-        
-        <div style="border-top:1px dashed #ddd; margin-bottom:10px;"></div>
-        
-        <div id="rcpItems" style="font-size:13px; line-height:1.6;"></div>
-        
-        <div style="border-top:1px solid #333; margin:10px 0;"></div>
-        
-        <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:14px;">
-            <span>TOTAL</span>
-            <span id="rcpTotal">0.00</span>
-        </div>
-    </div>
+    <div class="ov-panel" style="max-width: 320px; border-radius: 8px; overflow: hidden; background: #f5f5f5;">
 
-    <div style="padding: 15px; display:flex; gap:10px;">
-        <button class="btn" style="flex:1; background:white; color:#333; border:1px solid #ddd;" onclick="closeReceiptModal()">Close</button>
-        <button class="btn" style="flex:1; background:#43a047; color:white;" onclick="downloadReceiptJPG()">Save JPG</button>
+        <div id="receiptContent" style="background:white; padding: 25px 20px;">
+            <h3 style="margin:0 0 10px 0; text-align:center; font-weight:900; letter-spacing:1px; text-transform:uppercase;">MY SHOP</h3>
+            <div style="text-align:center; font-size:12px; color:#555; margin-bottom:15px;">
+                <span id="rcpDate"></span><br>
+                Invoice: <span id="rcpInv"></span>
+            </div>
+
+            <div style="border-top:1px dashed #ddd; margin-bottom:10px;"></div>
+
+            <div id="rcpItems" style="font-size:13px; line-height:1.6;"></div>
+
+            <div style="border-top:1px solid #333; margin:10px 0;"></div>
+
+            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:14px;">
+                <span>TOTAL</span>
+                <span id="rcpTotal">0.00</span>
+            </div>
+        </div>
+
+        <div style="padding: 15px; display:flex; gap:10px;">
+            <button class="btn" style="flex:1; background:white; color:#333; border:1px solid #ddd;"
+                    onclick="closeReceiptModal()">Close
+            </button>
+            <button class="btn" style="flex:1; background:#43a047; color:white;"
+                    onclick="downloadReceiptJPG()">Save JPG
+            </button>
+        </div>
     </div>
-  </div>
 </div>
 
 <div id="scanner-view">
-  <div class="close-scan">&times;</div>
-  <div id="reader" style="width: 100%; max-width: 400px; margin: auto;"></div>
-  <div style="color:white; text-align:center; margin-top:20px;">Point camera at barcode</div>
+    <div class="close-scan">&times;</div>
+    <div id="reader" style="width: 100%; max-width: 400px; margin: auto;"></div>
+    <div style="color:white; text-align:center; margin-top:20px;">Point camera at barcode</div>
 </div>
 
 <div id="toast" class="toast"></div>
 
+<!-- Loading overlay -->
+<div id="loading" class="loading-backdrop">
+    <div class="spinner"></div>
+</div>
+
 <script>
-// YOUR LINK
-const API_BASE="https://script.google.com/macros/s/AKfycby9RbMARs_vmsnU50gjuu9pZWo8ja1L2E9QCKzFEr_8FIeKN7csvJL9emYqpF7oNF0KHQ/exec";
-const CURRENCY="Ks ";
+    // YOUR LINK
+    const API_BASE = "https://script.google.com/macros/s/AKfycby9RbMARs_vmsnU50gjuu9pZWo8ja1L2E9QCKzFEr_8FIeKN7csvJL9emYqpF7oNF0KHQ/exec";
+    const CURRENCY = "Ks ";
 
-let items=[],cats=[],sales=[],ticket=[];
-let currentItemRow=null,currentCatRow=null,currentSaleRow=null;
-let html5QrCode;
+    let items = [], cats = [], sales = [], ticket = [];
+    let currentItemRow = null, currentCatRow = null, currentSaleRow = null;
+    let html5QrCode;
 
-const $=id=>document.getElementById(id);
-function toast(msg,ms=1800){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),ms);}
-function money(v){return CURRENCY+(Number(v)||0).toFixed(0);}
+    const $ = id => document.getElementById(id);
 
-/* API - ALWAYS USE POST TO AVOID CACHING */
-async function api(action, body = {}) {
-  try {
-      const res = await fetch(API_BASE, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ ...body, action })
-      });
-      const j = await res.json();
-      if(!j.success) throw new Error(j.error);
-      return j.data;
-  } catch(e) {
-      console.error(e); throw e;
-  }
-}
+    function toast(msg, ms = 1800) {
+        const t = $("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), ms);
+    }
 
-/* NAVIGATION */
-function openDrawer(){ $("drawer").classList.add("open");$("drawerBackdrop").classList.add("open"); }
-function closeDrawer(){ $("drawer").classList.remove("open");$("drawerBackdrop").classList.remove("open"); }
-function setScreen(name){
-  ["pos","items","receipts"].forEach(s=>$("scr-"+s).classList.remove("active"));
-  $("scr-"+name).classList.add("active");
-  document.querySelectorAll(".drawer-item[data-screen]").forEach(el=>el.classList.toggle("active",el.dataset.screen===name));
-  $("topTitle").textContent=name==="pos"?"Ticket":name==="items"?"Items":"Receipts";
-  $("topSub").textContent=name==="pos"?"POS":name==="items"?"Inventory":"History";
-  closeDrawer();
-}
-function closeOverlay(id){$(id).classList.remove("show");}
+    function money(v) {
+        return CURRENCY + (Number(v) || 0).toFixed(0);
+    }
 
-/* RENDERERS */
-function catColor(name){const c=cats.find(x=>(x.Name||"")===name);return c&&c.Color?c.Color:"#43a047";}
-function calcMargin(c,p){c=Number(c);p=Number(p);if(!p||isNaN(c)||isNaN(p))return null;return ((p-c)/p*100).toFixed(1);}
+    function showLoading() {
+        const l = $("loading");
+        if (l) l.classList.add("show");
+    }
 
-function renderFilters(){
-  const sel=$("filterCat"),cur=sel.value;sel.innerHTML="<option value=''>All categories</option>";
-  cats.forEach(c=>{const o=document.createElement("option");o.value=c.Name||"";o.textContent=c.Name||"";sel.appendChild(o);});
-  sel.value=cur;
-  const dl=$("dlCats");dl.innerHTML="";cats.forEach(c=>{const o=document.createElement("option");o.value=c.Name||"";dl.appendChild(o);});
-}
+    function hideLoading() {
+        const l = $("loading");
+        if (l) l.classList.remove("show");
+    }
 
-function renderGrid(){
-  const g=$("gridItems");g.innerHTML="";
-  const fc=$("filterCat").value, q=$("txtSearch").value.trim().toLowerCase();
-  const list=items.filter(i=>{
-    const inCat=!fc||i.Category===fc;
-    const s=((i.Name||"")+(i.Barcode||"")).toLowerCase();
-    return inCat&&(!q||s.includes(q));
-  });
-  if(!list.length){
-    const d=document.createElement("div");d.style.gridColumn="1/-1";d.style.textAlign="center";d.style.padding="20px";d.style.color="#888";d.textContent="No items found.";
-    if(q){const b=document.createElement("button");b.className="btn-outline";b.style.marginTop="10px";b.textContent="Add '"+q+"'?";b.onclick=()=>openItemForm(null,{Name:q,Barcode:q});d.appendChild(document.createElement("br"));d.appendChild(b);}
-    g.appendChild(d);return;
-  }
-  list.forEach(i=>{
-    const card=document.createElement("div");card.className="p-card";card.onclick=()=>addTicket(i);
-    card.innerHTML=`<div class="p-strip" style="background:${catColor(i.Category)}"></div>
-      <div class="p-name">${i.Name||""}</div>
-      <div class="p-cat">${i.Category||""}</div>
-      <div class="p-price">${money(i.Price||0)}</div>`;
-    g.appendChild(card);
-  });
-}
+    /* API - ALWAYS USE POST TO AVOID CACHING */
+    async function api(action, body = {}) {
+        try {
+            const res = await fetch(API_BASE, {
+                method: "POST",
+                headers: {"Content-Type": "text/plain;charset=utf-8"},
+                body: JSON.stringify({...body, action})
+            });
+            const j = await res.json();
+            if (!j.success) throw new Error(j.error || "API error");
+            return j.data;
+        } catch (e) {
+            console.error(e);
+            throw e;
+        }
+    }
 
-function renderTicket(){
-  const list=$("ticketList");list.innerHTML="";
-  if(!ticket.length){list.innerHTML='<div class="ticket-empty">Tap item to add.</div>';}
-  else{
-    ticket.forEach((l,idx)=>{
-      const row=document.createElement("div");row.className="t-row";
-      row.innerHTML=`
+    /* NAVIGATION */
+    function openDrawer() {
+        $("drawer").classList.add("open");
+        $("drawerBackdrop").classList.add("open");
+    }
+
+    function closeDrawer() {
+        $("drawer").classList.remove("open");
+        $("drawerBackdrop").classList.remove("open");
+    }
+
+    function setScreen(name) {
+        ["pos", "items", "receipts"].forEach(s => $("scr-" + s).classList.remove("active"));
+        $("scr-" + name).classList.add("active");
+        document.querySelectorAll(".drawer-item[data-screen]").forEach(el =>
+            el.classList.toggle("active", el.dataset.screen === name)
+        );
+        $("topTitle").textContent = name === "pos" ? "Ticket" : name === "items" ? "Items" : "Receipts";
+        $("topSub").textContent = name === "pos" ? "POS" : name === "items" ? "Inventory" : "History";
+        closeDrawer();
+    }
+
+    function closeOverlay(id) {
+        $(id).classList.remove("show");
+    }
+
+    /* RENDERERS */
+    function catColor(name) {
+        const c = cats.find(x => (x.Name || "") === name);
+        return c && c.Color ? c.Color : "#43a047";
+    }
+
+    function calcMargin(c, p) {
+        c = Number(c);
+        p = Number(p);
+        if (!p || isNaN(c) || isNaN(p)) return null;
+        return ((p - c) / p * 100).toFixed(1);
+    }
+
+    function updateMarginHint() {
+        const m = calcMargin($("fCost").value, $("fPrice").value);
+        $("lblMargin").textContent = m ? ("Margin: " + m + "%") : "";
+    }
+
+    function renderFilters() {
+        const sel = $("filterCat"), cur = sel.value;
+        sel.innerHTML = "<option value=''>All categories</option>";
+        cats.forEach(c => {
+            const o = document.createElement("option");
+            o.value = c.Name || "";
+            o.textContent = c.Name || "";
+            sel.appendChild(o);
+        });
+        sel.value = cur;
+        const dl = $("dlCats");
+        dl.innerHTML = "";
+        cats.forEach(c => {
+            const o = document.createElement("option");
+            o.value = c.Name || "";
+            dl.appendChild(o);
+        });
+    }
+
+    function renderGrid() {
+        const g = $("gridItems");
+        g.innerHTML = "";
+        const fc = $("filterCat").value,
+            q = $("txtSearch").value.trim().toLowerCase();
+        const list = items.filter(i => {
+            const inCat = !fc || i.Category === fc;
+            const s = ((i.Name || "") + (i.Barcode || "")).toLowerCase();
+            return inCat && (!q || s.includes(q));
+        });
+        if (!list.length) {
+            const d = document.createElement("div");
+            d.style.gridColumn = "1/-1";
+            d.style.textAlign = "center";
+            d.style.padding = "20px";
+            d.style.color = "#888";
+            d.textContent = "No items found.";
+            if (q) {
+                const b = document.createElement("button");
+                b.className = "btn-outline";
+                b.style.marginTop = "10px";
+                b.textContent = "Add '" + q + "'?";
+                b.onclick = () => openItemForm(null, {Name: q, Barcode: q});
+                d.appendChild(document.createElement("br"));
+                d.appendChild(b);
+            }
+            g.appendChild(d);
+            return;
+        }
+        list.forEach(i => {
+            const card = document.createElement("div");
+            card.className = "p-card";
+            card.onclick = () => addTicket(i);
+            card.innerHTML = `
+      <div class="p-strip" style="background:${catColor(i.Category)}"></div>
+      <div class="p-name">${i.Name || ""}</div>
+      <div class="p-cat">${i.Category || ""}</div>
+      <div class="p-price">${money(i.Price || 0)}</div>`;
+            g.appendChild(card);
+        });
+    }
+
+    function renderTicket() {
+        const list = $("ticketList");
+        list.innerHTML = "";
+        if (!ticket.length) {
+            list.innerHTML = '<div class="ticket-empty">Tap item to add.</div>';
+        } else {
+            ticket.forEach((l, idx) => {
+                const row = document.createElement("div");
+                row.className = "t-row";
+                row.innerHTML = `
       <div class="t-top">
           <div class="t-name">${l.name}</div>
       </div>
       <div class="t-meta">${money(l.price)} × ${l.qty}</div>
       <div class="t-ctrl">
           <div class="qty">
-              <button class="qty-btn" onclick="updateTicket(${idx},${l.qty-1})">-</button>
+              <button class="qty-btn" onclick="updateTicket(${idx},${l.qty - 1})">-</button>
               <span class="qty-val">${l.qty}</span>
-              <button class="qty-btn" onclick="updateTicket(${idx},${l.qty+1})">+</button>
+              <button class="qty-btn" onclick="updateTicket(${idx},${l.qty + 1})">+</button>
           </div>
-          <div class="t-amt">${money(l.price*l.qty)}</div>
+          <div class="t-amt">${money(l.price * l.qty)}</div>
       </div>`;
-      list.appendChild(row);
-    });
-  }
-  const totalQty=ticket.reduce((s,l)=>s+l.qty,0);
-  const total=ticket.reduce((s,l)=>s+l.qty*l.price,0);
-  
-  $("lblTicketTotal").textContent=money(total);
-  $("lblChargeBadge").textContent=money(total);
-}
-
-/* LOGIC */
-function addTicket(i){
-  const price=Number(i.Price)||0;if(!price){toast("No price");return;}
-  const ex=ticket.find(l=>l.row===i.rowIndex);
-  if(ex)ex.qty++;else ticket.push({row:i.rowIndex,name:i.Name||"",price,qty:1});
-  renderTicket();
-}
-function updateTicket(idx,qty){if(qty<=0)ticket.splice(idx,1);else ticket[idx].qty=qty;renderTicket(); }
-
-/* FORMS - ITEMS */
-function renderItems(){
-  const c=$("listItems");c.innerHTML="";
-  items.forEach(i=>{
-    const row=document.createElement("div");row.className="row-item";row.onclick=()=>openItemForm(i.rowIndex);
-    const m=calcMargin(i.Cost,i.Price);
-    row.innerHTML=`<div>
-        <div class="row-title">${i.Name}</div>
-        <div><span class="chip">${i.Category||"-"}</span>${i.Barcode?`<span class="chip"><i class="fa-solid fa-barcode"></i> ${i.Barcode}</span>`:""}</div>
-      </div>
-      <div class="right"><b>${money(i.Price)}</b><br><span style="color:#888">${i.Cost?money(i.Cost):""} ${m?`(${m}%)`:""}</span></div>`;
-    c.appendChild(row);
-  });
-  $("lblItemsCount").textContent=items.length+" items";
-}
-function openItemForm(rowIndex=null,prefill={}){
-  currentItemRow=rowIndex;
-  $("ovItemTitle").textContent=rowIndex?"Edit Item":"New Item";
-  const ex=rowIndex?items.find(i=>i.rowIndex===rowIndex):null;
-  $("fName").value=ex?ex.Name:(prefill.Name||"");
-  $("fCat").value=ex?ex.Category:(prefill.Category||"");
-  $("fCost").value=ex?ex.Cost:"";
-  $("fPrice").value=ex?ex.Price:"";
-  $("fBarcode").value=ex?ex.Barcode:(prefill.Barcode||"");
-  $("btnDelItem").style.display=rowIndex?"inline-block":"none";
-  $("ovItem").classList.add("show");
-}
-async function saveItem(){
-  const data={
-    rowIndex:currentItemRow,
-    Name:$("fName").value.trim(),
-    Category:$("fCat").value.trim(),
-    Cost:$("fCost").value,
-    Price:$("fPrice").value,
-    Barcode:$("fBarcode").value.trim()
-  };
-  if(!data.Name){toast("Name required");return;}
-  
-  if(currentItemRow){
-     const ex=items.find(i=>i.rowIndex===currentItemRow);
-     if(ex) Object.assign(ex,data);
-  } else {
-     items.push({...data, rowIndex: Date.now()}); 
-  }
-  renderItems();renderGrid();toast("Saving...");closeOverlay("ovItem");
-
-  try{
-    const saved=await api("saveItem",data);
-    const ex=items.find(i=>i.Name===data.Name && i.Barcode===data.Barcode);
-    if(ex) ex.rowIndex=saved.rowIndex;
-    toast("Saved");
-  }catch(e){toast("Save failed");console.error(e);}
-}
-async function deleteItem(){
-  if(!currentItemRow || !confirm("Delete item?"))return;
-  const r=currentItemRow;
-  items=items.filter(i=>i.rowIndex!==r);
-  renderItems();renderGrid();closeOverlay("ovItem");
-  await api("deleteItem",{rowIndex:r});
-}
-
-/* FORMS - CATS */
-function renderCats(){
-  const c=$("listCats");c.innerHTML="";
-  cats.forEach(cat=>{
-    const row=document.createElement("div");row.className="row-cat";row.onclick=()=>openCatForm(cat.rowIndex);
-    const count=items.filter(i=>i.Category===cat.Name).length;
-    row.innerHTML=`<div><div class="row-title">${cat.Name}</div><div class="hint">${count} items</div></div>
-      <div style="width:20px;height:20px;background:${cat.Color};border-radius:4px;border:1px solid #ddd"></div>`;
-    c.appendChild(row);
-  });
-}
-function openCatForm(rowIndex=null){
-  currentCatRow=rowIndex;
-  const ex=rowIndex?cats.find(c=>c.rowIndex===rowIndex):null;
-  $("ovCatTitle").textContent=rowIndex?"Edit Category":"New";
-  $("cName").value=ex?ex.Name:"";
-  $("cColor").value=ex?ex.Color||"#43a047":"#43a047";
-  $("btnDelCat").style.display=rowIndex?"inline-block":"none";
-  $("ovCat").classList.add("show");
-}
-async function saveCat(){
-  const data={rowIndex:currentCatRow,Name:$("cName").value.trim(),Color:$("cColor").value};
-  if(!data.Name)return;
-  if(currentCatRow){ const ex=cats.find(c=>c.rowIndex===currentCatRow); if(ex)Object.assign(ex,data); }
-  else cats.push({...data, rowIndex:Date.now()});
-  renderCats();renderFilters();closeOverlay("ovCat");
-  await api("saveCategory",data);
-}
-async function deleteCat(){
-  if(!currentCatRow||!confirm("Delete category?"))return;
-  const r=currentCatRow; cats=cats.filter(c=>c.rowIndex!==r);
-  renderCats();renderFilters();closeOverlay("ovCat");
-  await api("deleteCategory",{rowIndex:r});
-}
-
-/* SALES/RECEIPTS GROUPING */
-function renderReceipts(){
-  const c=$("listReceipts");c.innerHTML="";
-  if(!sales.length){c.innerHTML='<div class="hint">No sales yet.</div>';return;}
-  
-  let lastDate = "";
-  
-  sales.forEach(s=>{
-    const dateOnly = s.DateStr.split(",")[0]; 
-    if(dateOnly !== lastDate) {
-        const header = document.createElement("div");
-        header.className = "group-header";
-        header.textContent = dateOnly;
-        c.appendChild(header);
-        lastDate = dateOnly;
+                list.appendChild(row);
+            });
+        }
+        const total = ticket.reduce((s, l) => s + l.qty * l.price, 0);
+        $("lblTicketTotal").textContent = money(total);
+        $("lblChargeBadge").textContent = money(total);
     }
 
-    const row=document.createElement("div");row.className="row-rec";row.onclick=()=>openRec(s.rowIndex);
-    row.innerHTML=`<div><div class="row-title">#${s.Invoice}</div><div class="hint">${s.DateStr.split(",")[1] || ""}</div></div>
-      <div class="right"><b>${money(s.Total)}</b></div>`;
-    c.appendChild(row);
-  });
-}
+    /* LOGIC */
+    function addTicket(i) {
+        const price = Number(i.Price) || 0;
+        if (!price) {
+            toast("No price");
+            return;
+        }
+        const ex = ticket.find(l => l.row === i.rowIndex);
+        if (ex) ex.qty++;
+        else ticket.push({row: i.rowIndex, name: i.Name || "", price, qty: 1});
+        renderTicket();
+    }
 
-function openRec(rowIndex){
-  const s=sales.find(x=>x.rowIndex===rowIndex);if(!s)return;
-  currentSaleRow=rowIndex;
-  $("ovRecTitle").textContent="Invoice #"+s.Invoice;
-  let list=[]; try{list=JSON.parse(s.ItemsJSON);}catch(e){}
-  
-  let html=`
+    function updateTicket(idx, qty) {
+        if (qty <= 0) ticket.splice(idx, 1);
+        else ticket[idx].qty = qty;
+        renderTicket();
+    }
+
+    /* FORMS - ITEMS */
+    function renderItems() {
+        const c = $("listItems");
+        c.innerHTML = "";
+        items.forEach(i => {
+            const row = document.createElement("div");
+            row.className = "row-item";
+            row.onclick = () => openItemForm(i.rowIndex);
+            const m = calcMargin(i.Cost, i.Price);
+            row.innerHTML = `
+      <div>
+        <div class="row-title">${i.Name}</div>
+        <div>
+          <span class="chip">${i.Category || "-"}</span>
+          ${i.Barcode ? `<span class="chip"><i class="fa-solid fa-barcode"></i> ${i.Barcode}</span>` : ""}
+        </div>
+      </div>
+      <div class="right">
+        <b>${money(i.Price)}</b><br>
+        <span style="color:#888">
+          ${i.Cost ? money(i.Cost) : ""} ${m ? `(${m}%)` : ""}
+        </span>
+      </div>`;
+            c.appendChild(row);
+        });
+        $("lblItemsCount").textContent = items.length + " items";
+    }
+
+    function openItemForm(rowIndex = null, prefill = {}) {
+        currentItemRow = rowIndex;
+        $("ovItemTitle").textContent = rowIndex ? "Edit Item" : "New Item";
+        const ex = rowIndex ? items.find(i => i.rowIndex === rowIndex) : null;
+        $("fName").value = ex ? ex.Name : (prefill.Name || "");
+        $("fCat").value = ex ? ex.Category : (prefill.Category || "");
+        $("fCost").value = ex ? ex.Cost || "" : "";
+        $("fPrice").value = ex ? ex.Price || "" : "";
+        $("fBarcode").value = ex ? ex.Barcode : (prefill.Barcode || "");
+        $("btnDelItem").style.display = rowIndex ? "inline-block" : "none";
+        $("ovItem").classList.add("show");
+        updateMarginHint();
+    }
+
+    async function saveItem() {
+        const data = {
+            rowIndex: currentItemRow,
+            Name: $("fName").value.trim(),
+            Category: $("fCat").value.trim(),
+            Cost: $("fCost").value,
+            Price: $("fPrice").value,
+            Barcode: $("fBarcode").value.trim()
+        };
+        if (!data.Name) {
+            toast("Name required");
+            return;
+        }
+
+        let localRef = null;
+        if (currentItemRow) {
+            const ex = items.find(i => i.rowIndex === currentItemRow);
+            if (ex) {
+                Object.assign(ex, data);
+                localRef = ex;
+            }
+        } else {
+            localRef = {...data, rowIndex: Date.now()};
+            items.push(localRef);
+        }
+
+        renderItems();
+        renderGrid();
+        toast("Saving...");
+        closeOverlay("ovItem");
+
+        try {
+            const saved = await api("saveItem", data);
+            if (localRef && saved && saved.rowIndex) {
+                localRef.rowIndex = saved.rowIndex;
+                currentItemRow = saved.rowIndex;
+            }
+            toast("Saved");
+        } catch (e) {
+            console.error(e);
+            toast("Save failed");
+        }
+    }
+
+    async function deleteItem() {
+        if (!currentItemRow || !confirm("Delete item?")) return;
+        const r = currentItemRow;
+        items = items.filter(i => i.rowIndex !== r);
+        renderItems();
+        renderGrid();
+        closeOverlay("ovItem");
+        try {
+            await api("deleteItem", {rowIndex: r});
+        } catch (e) {
+            console.error(e);
+            toast("Delete failed on server");
+        }
+    }
+
+    /* FORMS - CATS */
+    function renderCats() {
+        const c = $("listCats");
+        c.innerHTML = "";
+        cats.forEach(cat => {
+            const row = document.createElement("div");
+            row.className = "row-cat";
+            row.onclick = () => openCatForm(cat.rowIndex);
+            const count = items.filter(i => i.Category === cat.Name).length;
+            row.innerHTML = `
+      <div>
+        <div class="row-title">${cat.Name}</div>
+        <div class="hint">${count} items</div>
+      </div>
+      <div style="width:20px;height:20px;background:${cat.Color};border-radius:4px;border:1px solid #ddd"></div>`;
+            c.appendChild(row);
+        });
+    }
+
+    function openCatForm(rowIndex = null) {
+        currentCatRow = rowIndex;
+        const ex = rowIndex ? cats.find(c => c.rowIndex === rowIndex) : null;
+        $("ovCatTitle").textContent = rowIndex ? "Edit Category" : "New";
+        $("cName").value = ex ? ex.Name : "";
+        $("cColor").value = ex ? ex.Color || "#43a047" : "#43a047";
+        $("btnDelCat").style.display = rowIndex ? "inline-block" : "none";
+        $("ovCat").classList.add("show");
+    }
+
+    async function saveCat() {
+        const data = {
+            rowIndex: currentCatRow,
+            Name: $("cName").value.trim(),
+            Color: $("cColor").value
+        };
+        if (!data.Name) return;
+
+        let localRef = null;
+        if (currentCatRow) {
+            const ex = cats.find(c => c.rowIndex === currentCatRow);
+            if (ex) {
+                Object.assign(ex, data);
+                localRef = ex;
+            }
+        } else {
+            localRef = {...data, rowIndex: Date.now()};
+            cats.push(localRef);
+        }
+        renderCats();
+        renderFilters();
+        closeOverlay("ovCat");
+
+        try {
+            const saved = await api("saveCategory", data);
+            if (localRef && saved && saved.rowIndex) {
+                localRef.rowIndex = saved.rowIndex;
+                currentCatRow = saved.rowIndex;
+            }
+        } catch (e) {
+            console.error(e);
+            toast("Save category failed");
+        }
+    }
+
+    async function deleteCat() {
+        if (!currentCatRow || !confirm("Delete category?")) return;
+        const r = currentCatRow;
+        cats = cats.filter(c => c.rowIndex !== r);
+        renderCats();
+        renderFilters();
+        closeOverlay("ovCat");
+        try {
+            await api("deleteCategory", {rowIndex: r});
+        } catch (e) {
+            console.error(e);
+            toast("Delete category failed on server");
+        }
+    }
+
+    /* SALES/RECEIPTS GROUPING */
+    function renderReceipts() {
+        const c = $("listReceipts");
+        c.innerHTML = "";
+        if (!sales.length) {
+            c.innerHTML = '<div class="hint">No sales yet.</div>';
+            return;
+        }
+
+        let lastDate = "";
+        sales.forEach(s => {
+            const dateOnly = (s.DateStr || "").split(",")[0];
+            if (dateOnly && dateOnly !== lastDate) {
+                const header = document.createElement("div");
+                header.className = "group-header";
+                header.textContent = dateOnly;
+                c.appendChild(header);
+                lastDate = dateOnly;
+            }
+
+            const row = document.createElement("div");
+            row.className = "row-rec";
+            row.onclick = () => openRec(s.rowIndex);
+            row.innerHTML = `
+      <div>
+        <div class="row-title">#${s.Invoice}</div>
+        <div class="hint">${(s.DateStr || "").split(",")[1] || ""}</div>
+      </div>
+      <div class="right"><b>${money(s.Total)}</b></div>`;
+            c.appendChild(row);
+        });
+    }
+
+    function openRec(rowIndex) {
+        const s = sales.find(x => x.rowIndex === rowIndex);
+        if (!s) return;
+        currentSaleRow = rowIndex;
+        $("ovRecTitle").textContent = "Invoice #" + s.Invoice;
+        let list = [];
+        try {
+            list = JSON.parse(s.ItemsJSON || "[]");
+            if (!Array.isArray(list)) list = [];
+        } catch (e) {
+            list = [];
+        }
+
+        let html = `
     <h3 style="margin:0 0 10px 0; text-align:center; font-weight:900; letter-spacing:1px; text-transform:uppercase;">MY SHOP</h3>
     <div style="text-align:center; font-size:12px; color:#555; margin-bottom:15px;">
-        <span>${s.DateStr}</span><br>
+        <span>${s.DateStr || ""}</span><br>
         Invoice: ${s.Invoice}
     </div>
     <div style="border-top:1px dashed #ddd; margin-bottom:10px;"></div>
   `;
-  
-  list.forEach(l=>{
-      html+=`<div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px;">
+
+        list.forEach(l => {
+            html += `<div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px;">
         <div>${l.name}<br><small style="color:#666">x${l.qty}</small></div>
-        <div>${money(l.qty*l.price)}</div>
+        <div>${money(l.qty * l.price)}</div>
       </div>`;
-  });
-  
-  html+=`<div style="border-top:1px solid #333; margin:10px 0;"></div>
+        });
+
+        html += `<div style="border-top:1px solid #333; margin:10px 0;"></div>
         <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:14px;">
             <span>TOTAL</span>
             <span>${money(s.Total)}</span>
         </div>`;
-        
-  $("ovRecBody").innerHTML=html;
-  $("ovRec").classList.add("show");
-}
 
-async function deleteRec(){
-  if(!currentSaleRow||!confirm("Delete receipt?"))return;
-  const r=currentSaleRow; sales=sales.filter(s=>s.rowIndex!==r);
-  renderReceipts();closeOverlay("ovRec");
-  await api("deleteSale",{rowIndex:r});
-}
+        $("ovRecBody").innerHTML = html;
+        $("ovRec").classList.add("show");
+    }
 
-async function downloadHistoryJPG() {
-    saveElementAsJpg("historyRcpContent");
-}
+    async function deleteRec() {
+        if (!currentSaleRow || !confirm("Delete receipt?")) return;
+        const r = currentSaleRow;
+        sales = sales.filter(s => s.rowIndex !== r);
+        renderReceipts();
+        closeOverlay("ovRec");
+        try {
+            await api("deleteSale", {rowIndex: r});
+        } catch (e) {
+            console.error(e);
+            toast("Delete receipt failed on server");
+        }
+    }
 
-/* HELPER: Save any element as JPG */
-async function saveElementAsJpg(elId) {
-    toast("Saving Image...");
-    const el = $(elId);
-    if(!el) return;
-    try {
-        const canvas = await html2canvas(el, { scale: 2, backgroundColor: "#ffffff" });
-        const link = document.createElement('a');
-        link.download = 'Receipt_'+Date.now()+'.jpg';
-        link.href = canvas.toDataURL("image/jpeg", 0.9);
-        link.click();
-        toast("Image Downloaded");
-    } catch(e) { console.error(e); toast("Error saving image"); }
-}
+    async function downloadHistoryJPG() {
+        saveElementAsJpg("historyRcpContent");
+    }
 
-/* CHARGE FUNCTION WITH MODAL */
-async function charge(){
-  if(!ticket.length){toast("Ticket is empty");return;}
-  
-  const itemsCopy=ticket.map(l=>({name:l.name,price:l.price,qty:l.qty}));
-  const total=ticket.reduce((s,l)=>s+l.qty*l.price,0);
-  const now = new Date();
-  
-  const tempInv = "INV-" + Math.floor(100000 + Math.random() * 900000);
-  const dateStr = now.toLocaleDateString() + ", " + now.toLocaleTimeString();
+    /* HELPER: Save any element as JPG */
+    async function saveElementAsJpg(elId) {
+        toast("Saving Image...");
+        const el = $(elId);
+        if (!el) return;
+        try {
+            const canvas = await html2canvas(el, {scale: 2, backgroundColor: "#ffffff"});
+            const link = document.createElement('a');
+            link.download = 'Receipt_' + Date.now() + '.jpg';
+            link.href = canvas.toDataURL("image/jpeg", 0.9);
+            link.click();
+            toast("Image Downloaded");
+        } catch (e) {
+            console.error(e);
+            toast("Error saving image");
+        }
+    }
 
-  sales.unshift({
-      rowIndex: Date.now(),
-      Invoice: tempInv,
-      ItemsJSON: JSON.stringify(itemsCopy),
-      Total: total,
-      DateStr: dateStr
-  });
-  renderReceipts();
+    /* CHARGE FUNCTION WITH MODAL */
+    async function charge() {
+        if (!ticket.length) {
+            toast("Ticket is empty");
+            return;
+        }
 
-  $("rcpDate").textContent = dateStr;
-  $("rcpInv").textContent = tempInv;
-  $("rcpTotal").textContent = money(total);
-  
-  const rcpList = $("rcpItems");
-  rcpList.innerHTML = "";
-  itemsCopy.forEach(item => {
-      rcpList.innerHTML += `
+        const itemsCopy = ticket.map(l => ({name: l.name, price: l.price, qty: l.qty}));
+        const total = ticket.reduce((s, l) => s + l.qty * l.price, 0);
+        const now = new Date();
+
+        const tempInv = "INV-" + Math.floor(100000 + Math.random() * 900000);
+        const dateStr = now.toLocaleDateString() + ", " + now.toLocaleTimeString();
+
+        sales.unshift({
+            rowIndex: Date.now(),
+            Invoice: tempInv,
+            ItemsJSON: JSON.stringify(itemsCopy),
+            Total: total,
+            DateStr: dateStr
+        });
+        renderReceipts();
+
+        $("rcpDate").textContent = dateStr;
+        $("rcpInv").textContent = tempInv;
+        $("rcpTotal").textContent = money(total);
+
+        const rcpList = $("rcpItems");
+        rcpList.innerHTML = "";
+        itemsCopy.forEach(item => {
+            rcpList.innerHTML += `
       <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
           <div>
               <div>${item.name}</div>
@@ -711,139 +1516,176 @@ async function charge(){
           </div>
           <div>${money(item.price * item.qty)}</div>
       </div>`;
-  });
-  $("ovReceiptModal").classList.add("show");
+        });
+        $("ovReceiptModal").classList.add("show");
 
-  ticket=[]; renderTicket();
+        ticket = [];
+        renderTicket();
 
-  try{
-      const saved=await api("saveSale",{ItemsJSON:itemsCopy,Total:total});
-      sales[0].Invoice=saved.Invoice;
-      sales[0].rowIndex=saved.rowIndex;
-      $("rcpInv").textContent = saved.Invoice;
-      renderReceipts();
-      toast("Sale Saved!");
-  }catch(e){ console.error(e); toast("Saved locally"); }
-}
-
-/* MODAL HELPERS */
-function closeReceiptModal() {
-    $("ovReceiptModal").classList.remove("show");
-}
-
-async function downloadReceiptJPG() {
-    saveElementAsJpg("receiptContent");
-}
-
-/* SCANNER LOGIC */
-function startScanner() {
-  $("scanner-view").style.display = "flex";
-  html5QrCode = new Html5Qrcode("reader");
-  const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-  
-  html5QrCode.start({ facingMode: "environment" }, config, (decodedText) => {
-    stopScanner();
-    const foundItem = items.find(i => i.Barcode == decodedText);
-    if (foundItem) {
-      addTicket(foundItem);
-      toast("Added: " + foundItem.Name);
-      $("txtSearch").value = "";
-    } else {
-      $("txtSearch").value = decodedText;
-      renderGrid();
-      toast("Item not found");
+        try {
+            const saved = await api("saveSale", {ItemsJSON: itemsCopy, Total: total});
+            if (saved && saved.Invoice && saved.rowIndex && sales[0]) {
+                sales[0].Invoice = saved.Invoice;
+                sales[0].rowIndex = saved.rowIndex;
+                $("rcpInv").textContent = saved.Invoice;
+                renderReceipts();
+            }
+            toast("Sale Saved!");
+        } catch (e) {
+            console.error(e);
+            toast("Saved locally (sync failed)");
+        }
     }
-  }, (errorMessage) => {
-    // ignore
-  }).catch(err => {
-    console.error(err);
-    alert("Camera permission failed?");
-    $("scanner-view").style.display = "none";
-  });
-}
 
-function stopScanner() {
-  if (html5QrCode) {
-    html5QrCode.stop().then(() => {
-      html5QrCode.clear();
-      $("scanner-view").style.display = "none";
-    }).catch(err => {
-      $("scanner-view").style.display = "none";
+    /* MODAL HELPERS */
+    function closeReceiptModal() {
+        $("ovReceiptModal").classList.remove("show");
+    }
+
+    async function downloadReceiptJPG() {
+        saveElementAsJpg("receiptContent");
+    }
+
+    /* SCANNER LOGIC */
+    function startScanner() {
+        $("scanner-view").style.display = "flex";
+        html5QrCode = new Html5Qrcode("reader");
+        const config = {fps: 10, qrbox: {width: 250, height: 250}};
+
+        html5QrCode.start(
+            {facingMode: "environment"},
+            config,
+            (decodedText) => {
+                stopScanner();
+                const foundItem = items.find(i => i.Barcode == decodedText);
+                if (foundItem) {
+                    addTicket(foundItem);
+                    toast("Added: " + foundItem.Name);
+                    $("txtSearch").value = "";
+                } else {
+                    $("txtSearch").value = decodedText;
+                    renderGrid();
+                    toast("Item not found");
+                }
+            },
+            (errorMessage) => {
+                // ignore scan errors
+            }
+        ).catch(err => {
+            console.error(err);
+            alert("Camera permission failed?");
+            $("scanner-view").style.display = "none";
+        });
+    }
+
+    function stopScanner() {
+        if (html5QrCode) {
+            html5QrCode.stop().then(() => {
+                html5QrCode.clear();
+                $("scanner-view").style.display = "none";
+            }).catch(err => {
+                console.error(err);
+                $("scanner-view").style.display = "none";
+            });
+        } else {
+            $("scanner-view").style.display = "none";
+        }
+    }
+
+    /* LOAD DATA */
+    async function loadAll() {
+        showLoading();
+        try {
+            const d = await api("getData");
+            if (d) {
+                items = d.items || [];
+                cats = d.categories || [];
+                renderFilters();
+                renderGrid();
+                renderItems();
+                renderCats();
+                toast("Data Loaded");
+            }
+            const s = await api("getSales");
+            if (s) {
+                sales = s || [];
+                renderReceipts();
+            }
+        } catch (e) {
+            console.error(e);
+            toast("Loading Failed");
+        } finally {
+            hideLoading();
+        }
+    }
+
+    /* INIT */
+    window.addEventListener("load", () => {
+        $("btnMenu").onclick = openDrawer;
+        $("drawerBackdrop").onclick = closeDrawer;
+        document.querySelectorAll(".drawer-item[data-screen]").forEach(el =>
+            el.onclick = () => setScreen(el.dataset.screen)
+        );
+
+        // Back Key (mobile) - avoid infinite loop
+        if (window.history && window.history.pushState) {
+            history.pushState({app: true}, "");
+            function onAppPopState(e) {
+                if (!e.state || !e.state.app) return;
+                if (confirm("Exit Application?")) {
+                    window.removeEventListener("popstate", onAppPopState);
+                    history.back();
+                } else {
+                    history.pushState({app: true}, "");
+                }
+            }
+
+            window.addEventListener("popstate", onAppPopState);
+        }
+
+        $("navExit").onclick = () => {
+            if (confirm("Exit?")) window.close();
+        };
+
+        $("filterCat").onchange = renderGrid;
+        $("txtSearch").oninput = renderGrid;
+        $("btnScan").onclick = startScanner;
+        document.querySelector(".close-scan").onclick = stopScanner;
+
+        $("btnCharge").onclick = charge;
+
+        $("tabItems").onclick = () => {
+            $("tabItems").classList.add("active");
+            $("tabCats").classList.remove("active");
+            $("tabItemsPane").style.display = "";
+            $("tabCatsPane").style.display = "none";
+        };
+        $("tabCats").onclick = () => {
+            $("tabCats").classList.add("active");
+            $("tabItems").classList.remove("active");
+            $("tabCatsPane").style.display = "";
+            $("tabItemsPane").style.display = "none";
+        };
+
+        $("btnNewItem").onclick = () => openItemForm();
+        $("btnSaveItem").onclick = saveItem;
+        $("btnDelItem").onclick = deleteItem;
+        $("fCost").oninput = updateMarginHint;
+        $("fPrice").oninput = updateMarginHint;
+
+        $("btnNewCat").onclick = () => openCatForm();
+        $("btnSaveCat").onclick = saveCat;
+        $("btnDelCat").onclick = deleteCat;
+
+        document.querySelectorAll(".ov-close").forEach(b =>
+            b.onclick = () => closeOverlay(b.dataset.close)
+        );
+        document.querySelectorAll("[data-close]").forEach(b =>
+            b.onclick = () => closeOverlay(b.dataset.close)
+        );
+
+        loadAll();
     });
-  } else {
-    $("scanner-view").style.display = "none";
-  }
-}
-
-/* LOAD DATA */
-async function loadAll(){
-    try {
-        const d = await api("getData");
-        if(d) {
-            items = d.items || [];
-            cats = d.categories || [];
-            renderFilters();
-            renderGrid();
-            renderItems();
-            renderCats();
-            toast("Data Loaded");
-        }
-        const s = await api("getSales");
-        if(s) {
-            sales = s || [];
-            renderReceipts();
-        }
-    } catch(e) {
-        console.error(e);
-        toast("Loading Failed. Retrying...");
-    }
-}
-
-/* INIT */
-window.addEventListener("load",()=>{
-  $("btnMenu").onclick=openDrawer;
-  $("drawerBackdrop").onclick=closeDrawer;
-  document.querySelectorAll(".drawer-item[data-screen]").forEach(el=>el.onclick=()=>setScreen(el.dataset.screen));
-  
-  // Back Key
-  history.pushState(null, null, location.href);
-  window.onpopstate = function () {
-      if(confirm("Exit Application?")) {
-          history.back();
-      } else {
-          history.pushState(null, null, location.href);
-      }
-  };
-  
-  $("navExit").onclick=()=>{if(confirm("Exit?"))window.close();};
-  
-  $("filterCat").onchange=renderGrid;
-  $("txtSearch").oninput=renderGrid;
-  $("btnScan").onclick=startScanner;
-  document.querySelector(".close-scan").onclick=stopScanner;
-  
-  $("btnCharge").onclick=charge;
-  
-  $("tabItems").onclick=()=>{ $("tabItems").classList.add("active");$("tabCats").classList.remove("active");$("tabItemsPane").style.display="";$("tabCatsPane").style.display="none";};
-  $("tabCats").onclick=()=>{ $("tabCats").classList.add("active");$("tabItems").classList.remove("active");$("tabCatsPane").style.display="";$("tabItemsPane").style.display="none";};
-  
-  $("btnNewItem").onclick=()=>openItemForm();
-  $("btnSaveItem").onclick=saveItem;
-  $("btnDelItem").onclick=deleteItem;
-  $("fCost").oninput=()=>{$("lblMargin").textContent=calcMargin($("fCost").value,$("fPrice").value)+"%"};
-  $("fPrice").oninput=()=>{$("lblMargin").textContent=calcMargin($("fCost").value,$("fPrice").value)+"%"};
-  
-  $("btnNewCat").onclick=()=>openCatForm();
-  $("btnSaveCat").onclick=saveCat;
-  $("btnDelCat").onclick=deleteCat;
-  $("btnDelRec").onclick=deleteRec;
-  
-  document.querySelectorAll(".ov-close").forEach(b=>b.onclick=()=>closeOverlay(b.dataset.close));
-  document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>closeOverlay(b.dataset.close));
-
-  toast("Loading...");
-  loadAll();
-});
 </script>
 </body>
 </html>
