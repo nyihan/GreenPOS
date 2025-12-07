@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,7 +50,7 @@
         .pos-main { flex: 1; display: flex; overflow: hidden; background: #f0f2f5; }
         
         /* Product Grid (Left Side) */
-        .product-grid { flex: 1; overflow-y: auto; padding: 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; align-content: flex-start; padding-bottom: 70px; }
+        .product-grid { flex: 1; overflow-y: auto; padding: 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; align-content: flex-start; padding-bottom: 80px; }
         .p-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.1); cursor: pointer; display: flex; flex-direction: column; height: 100px; border: 1px solid #eee; }
         .p-card:active { transform: scale(0.95); }
         .p-strip { height: 5px; }
@@ -59,12 +60,13 @@
 
         /* Ticket Side Panel */
         .ticket-wrap { width: 40%; min-width: 140px; max-width: 350px; background: white; border-left: 1px solid #ddd; display: flex; flex-direction: column; z-index: 30; height: 100%; }
+        @media (max-width: 600px) { .ticket-wrap { display: none; } }
+
         .ticket { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .ticket-head { padding: 10px; background: #f9f9f9; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-weight: bold; font-size: 13px; }
-        .ticket-list { flex: 1; overflow-y: auto; padding: 0; padding-bottom: 60px; background: #fff; }
+        .ticket-list { flex: 1; overflow-y: auto; padding: 0; padding-bottom: 80px; background: #fff; }
         .ticket-empty { padding: 20px; text-align: center; color: #999; font-size: 12px; font-style: italic; margin-top: 50px;}
         
-        /* Ticket Row Item */
         .t-row { padding: 8px; border-bottom: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 5px; position:relative; }
         .t-top { display: flex; justify-content: space-between; align-items: flex-start; }
         .t-name { font-size: 13px; font-weight: 600; width: 100%; line-height: 1.2; }
@@ -75,10 +77,12 @@
         .qty-val { font-size: 13px; font-weight: bold; min-width: 20px; text-align: center; }
         .t-amt { font-weight: bold; font-size: 13px; color: var(--text); }
 
-        /* Charge Bar */
-        .charge-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; background: var(--primary); color: white; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 50; }
-        .charge-info { text-align: center; line-height: 1; }
-        .btn-main { background: transparent; border: none; color: white; font-weight: bold; font-size: 15px; }
+        /* NEW: Floating Charge Bar */
+        .charge-container { position: absolute; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: center; pointer-events: none; z-index: 60; }
+        .charge-btn { pointer-events: auto; background: var(--primary); color: white; border-radius: 50px; padding: 12px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 15px; cursor: pointer; transition: transform 0.1s; border: none; min-width: 200px; justify-content: center; }
+        .charge-btn:active { transform: scale(0.95); }
+        .charge-txt { font-weight: bold; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .charge-badge { background: rgba(255,255,255,0.25); padding: 2px 10px; border-radius: 20px; font-size: 13px; font-weight: bold; }
 
         /* GENERAL LISTS */
         .card { background: white; margin: 10px; padding: 10px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
@@ -90,6 +94,9 @@
         .row-title { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
         .chip { background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #555; margin-right: 5px; }
         .right { text-align: right; font-size: 12px; }
+
+        /* Group Header for Receipts */
+        .group-header { background: #f0f0f0; padding: 5px 12px; font-size: 12px; font-weight: bold; color: #666; margin-top: 0; }
 
         /* TABS */
         .tab { display: flex; border-bottom: 1px solid #ddd; background: white; }
@@ -179,13 +186,10 @@
         </div>
       </div>
       
-      <div class="charge-bar">
-        <div class="charge-info">
-          <b id="lblChargeTotal">Ks 0</b><br/>
-          <span id="lblChargeItems" style="font-size:11px; opacity:0.8">0 items</span>
-        </div>
-        <button id="btnCharge" class="btn-main">
-          Charge
+      <div class="charge-container">
+        <button id="btnCharge" class="charge-btn">
+            <span class="charge-txt">Charge</span>
+            <span id="lblChargeBadge" class="charge-badge">Ks 0</span>
         </button>
       </div>
     </div>
@@ -302,9 +306,12 @@
       <b id="ovRecTitle">Receipt</b>
       <button class="ov-close" data-close="ovRec">&times;</button>
     </div>
-    <div class="ov-body" id="ovRecBody"></div>
+    <div id="historyRcpContent" style="background:white; padding:10px;">
+        <div id="ovRecBody"></div>
+    </div>
     <div class="ov-foot">
-      <button id="btnDelRec" class="btn btn-danger">Delete</button>
+      <button class="btn btn-danger" style="margin-right:auto" onclick="deleteRec()">Delete</button>
+      <button class="btn btn-primary" onclick="downloadHistoryJPG()">Save JPG</button>
       <button class="btn btn-ghost" data-close="ovRec">Close</button>
     </div>
   </div>
@@ -454,8 +461,8 @@ function renderTicket(){
   const total=ticket.reduce((s,l)=>s+l.qty*l.price,0);
   
   $("lblTicketTotal").textContent=money(total);
-  $("lblChargeTotal").textContent=money(total);
-  $("lblChargeItems").textContent=totalQty+" items";
+  // NEW FLOATING BTN UPDATE
+  $("lblChargeBadge").textContent=money(total);
 }
 
 /* LOGIC */
@@ -563,32 +570,64 @@ async function deleteCat(){
   await api("deleteCategory",{rowIndex:r});
 }
 
-/* SALES/RECEIPTS */
+/* SALES/RECEIPTS GROUPING */
 function renderReceipts(){
   const c=$("listReceipts");c.innerHTML="";
   if(!sales.length){c.innerHTML='<div class="hint">No sales yet.</div>';return;}
+  
+  let lastDate = "";
+  
   sales.forEach(s=>{
+    // Grouping Logic
+    const dateOnly = s.DateStr.split(",")[0]; // "M/D/YYYY"
+    if(dateOnly !== lastDate) {
+        const header = document.createElement("div");
+        header.className = "group-header";
+        header.textContent = dateOnly;
+        c.appendChild(header);
+        lastDate = dateOnly;
+    }
+
     const row=document.createElement("div");row.className="row-rec";row.onclick=()=>openRec(s.rowIndex);
-    row.innerHTML=`<div><div class="row-title">#${s.Invoice}</div><div class="hint">${s.DateStr}</div></div>
+    row.innerHTML=`<div><div class="row-title">#${s.Invoice}</div><div class="hint">${s.DateStr.split(",")[1] || s.DateStr}</div></div>
       <div class="right"><b>${money(s.Total)}</b></div>`;
     c.appendChild(row);
   });
 }
+
 function openRec(rowIndex){
   const s=sales.find(x=>x.rowIndex===rowIndex);if(!s)return;
   currentSaleRow=rowIndex;
   $("ovRecTitle").textContent="Invoice #"+s.Invoice;
   let list=[]; try{list=JSON.parse(s.ItemsJSON);}catch(e){}
-  const b=$("ovRecBody");b.innerHTML=`<div class="hint" style="text-align:center;margin-bottom:10px">${s.DateStr}</div>`;
+  
+  // Format for receipt view (similar to charge modal)
+  let html=`
+    <h3 style="margin:0 0 10px 0; text-align:center; font-weight:900; letter-spacing:1px; text-transform:uppercase;">MY SHOP</h3>
+    <div style="text-align:center; font-size:12px; color:#555; margin-bottom:15px;">
+        <span>${s.DateStr}</span><br>
+        Invoice: ${s.Invoice}
+    </div>
+    <div style="border-top:1px dashed #ddd; margin-bottom:10px;"></div>
+  `;
+  
   list.forEach(l=>{
-      b.innerHTML+=`<div class="t-row" style="padding:5px 0">
-        <div>${l.name}<br><small>${l.qty} x ${money(l.price)}</small></div>
+      html+=`<div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px;">
+        <div>${l.name}<br><small style="color:#666">x${l.qty}</small></div>
         <div>${money(l.qty*l.price)}</div>
       </div>`;
   });
-  b.innerHTML+=`<hr style="border:0;border-top:1px dashed #ccc;margin:10px 0"><div class="right"><b>Total: ${money(s.Total)}</b></div>`;
+  
+  html+=`<div style="border-top:1px solid #333; margin:10px 0;"></div>
+        <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:14px;">
+            <span>TOTAL</span>
+            <span>${money(s.Total)}</span>
+        </div>`;
+        
+  $("ovRecBody").innerHTML=html;
   $("ovRec").classList.add("show");
 }
+
 async function deleteRec(){
   if(!currentSaleRow||!confirm("Delete receipt?"))return;
   const r=currentSaleRow; sales=sales.filter(s=>s.rowIndex!==r);
@@ -596,10 +635,28 @@ async function deleteRec(){
   await api("deleteSale",{rowIndex:r});
 }
 
-/* NEW: CHARGE FUNCTION WITH MODAL */
+async function downloadHistoryJPG() {
+    saveElementAsJpg("historyRcpContent");
+}
+
+/* HELPER: Save any element as JPG */
+async function saveElementAsJpg(elId) {
+    toast("Saving Image...");
+    const el = $(elId);
+    if(!el) return;
+    try {
+        const canvas = await html2canvas(el, { scale: 2, backgroundColor: "#ffffff" });
+        const link = document.createElement('a');
+        link.download = 'GreenPOS_'+Date.now()+'.jpg';
+        link.href = canvas.toDataURL("image/jpeg", 0.9);
+        link.click();
+        toast("Image Downloaded");
+    } catch(e) { console.error(e); toast("Error saving image"); }
+}
+
+/* CHARGE FUNCTION WITH MODAL */
 async function charge(){
   if(!ticket.length){toast("Ticket is empty");return;}
-  // NO CONFIRM BOX HERE
   
   const itemsCopy=ticket.map(l=>({name:l.name,price:l.price,qty:l.qty}));
   const total=ticket.reduce((s,l)=>s+l.qty*l.price,0);
@@ -658,24 +715,7 @@ function closeReceiptModal() {
 }
 
 async function downloadReceiptJPG() {
-    toast("Saving Image...");
-    const el = $("receiptContent");
-    if(!el) return;
-    
-    try {
-        const canvas = await html2canvas(el, {
-            scale: 2,
-            backgroundColor: "#ffffff"
-        });
-        const link = document.createElement('a');
-        link.download = 'Receipt-' + Date.now() + '.jpg';
-        link.href = canvas.toDataURL("image/jpeg", 0.9);
-        link.click();
-        toast("Image Downloaded");
-    } catch(e) {
-        console.error(e);
-        toast("Error saving image");
-    }
+    saveElementAsJpg("receiptContent");
 }
 
 /* SCANNER LOGIC */
@@ -723,6 +763,17 @@ window.addEventListener("load",()=>{
   $("btnMenu").onclick=openDrawer;
   $("drawerBackdrop").onclick=closeDrawer;
   document.querySelectorAll(".drawer-item[data-screen]").forEach(el=>el.onclick=()=>setScreen(el.dataset.screen));
+  
+  // NEW: Back Key Logic (Push State)
+  history.pushState(null, null, location.href);
+  window.onpopstate = function () {
+      if(confirm("Exit Application?")) {
+          history.back();
+      } else {
+          history.pushState(null, null, location.href);
+      }
+  };
+  
   $("navExit").onclick=()=>{if(confirm("Exit?"))window.close();};
   
   $("filterCat").onchange=renderGrid;
