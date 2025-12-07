@@ -6,10 +6,8 @@
     <title>Ko Nyi POS</title>
     <meta name="theme-color" content="#43a047">
 
-    <!-- PWA manifest (static file) -->
     <link rel="manifest" href="manifest.json">
 
-    <!-- Libraries -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -25,106 +23,120 @@
         .header-title { font-size: 18px; font-weight: bold; }
         .ticket-badge { background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px; font-size: 13px; font-weight: bold; display: none; }
 
-        /* SIDEBAR */
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; display: none; }
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; }
-        .sidebar.open { left: 0; }
-        .sidebar-header { background: var(--primary); height: 120px; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: flex-end; }
-        .nav-item { padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px; cursor: pointer; color: #444; font-weight: 500; }
-        .nav-item:active { background: #f0f0f0; }
+        /* SIDEBAR (Drawer) */
+        .drawer-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; display: none; }
+        .drawer-backdrop.open { display: block; }
+        .drawer { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: white; z-index: 100; transition: 0.3s; display: flex; flex-direction: column; }
+        .drawer.open { left: 0; }
+        .drawer-head { background: var(--primary); height: 120px; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: flex-end; }
+        .drawer-list { flex: 1; overflow-y: auto; padding-top: 10px; }
+        .drawer-item { padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px; cursor: pointer; color: #444; font-weight: 500; }
+        .drawer-item.active { background: #e8f5e9; color: var(--primary); }
+        .drawer-foot { padding: 15px; text-align: center; font-size: 11px; color: #999; border-top: 1px solid #eee; }
 
-        /* PAGES */
-        .page { flex: 1; display: none; flex-direction: column; overflow: hidden; position: relative; }
-        .page.active { display: flex; }
+        /* TOP NAV */
+        .top { background: var(--primary); color: white; height: 56px; display: flex; align-items: center; padding: 0 10px; gap: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 50; flex-shrink: 0; }
+        .top-btn { background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 8px; }
+        .top-title { font-size: 18px; font-weight: bold; line-height: 1.2; }
+        .top-sub { font-size: 12px; opacity: 0.8; }
 
-        /* --- POS SCREEN --- */
-        .pos-top-bar { padding: 8px 10px; background: white; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 3px rgba(0,0,0,0.05); z-index: 20; }
-        .cat-selector { display: flex; align-items: center; gap: 5px; font-weight: 500; color: #444; cursor: pointer; padding: 8px; border-radius: 4px; white-space: nowrap; }
-        .cat-selector:active { background: #f0f0f0; }
+        /* SCREENS */
+        .content { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+        .screen { display: none; flex-direction: column; height: 100%; width: 100%; }
+        .screen.active { display: flex; }
 
-        .search-wrap { flex: 1; position: relative; display: flex; align-items: center; background: #f1f1f1; border-radius: 20px; padding: 0 10px; }
-        .search-input { width: 100%; padding: 10px; border: none; background: transparent; outline: none; font-size: 15px; }
-        .barcode-btn { font-size: 20px; color: #666; padding: 5px; cursor: pointer; }
+        /* POS LAYOUT */
+        .pos-top { padding: 10px; background: white; border-bottom: 1px solid #eee; display: flex; gap: 10px; align-items: center; }
+        #filterCat { border: 1px solid #ddd; padding: 8px; border-radius: 4px; background: white; max-width: 120px; }
+        
+        .search-wrap { flex: 1; display: flex; align-items: center; background: #f1f1f1; border-radius: 4px; padding: 0 5px; border: 1px solid #ddd; }
+        .search-input { flex: 1; padding: 8px; border: none; background: transparent; outline: none; }
+        .barcode-btn { background: none; border: none; color: #555; font-size: 18px; padding: 8px 12px; cursor: pointer; border-left: 1px solid #ddd; }
+        .barcode-btn:active { color: var(--primary); background: #e0e0e0; }
 
-        .cat-dropdown { position: absolute; top: 105px; left: 0; width: 220px; background: white; z-index: 30; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: none; max-height: 300px; overflow-y: auto; border-radius: 0 0 8px 0; }
-        .cat-option { padding: 15px; border-bottom: 1px solid #f0f0f0; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        .pos-main { flex: 1; display: flex; overflow: hidden; background: #f0f2f5; }
+        .grid { flex: 1; padding: 10px; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; align-content: flex-start; }
+        
+        /* Product Card */
+        .p-card { background: white; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); overflow: hidden; cursor: pointer; display: flex; flex-direction: column; height: 110px; border: 1px solid #eee; }
+        .p-card:active { transform: scale(0.98); }
+        .p-strip { height: 6px; }
+        .p-name { font-size: 13px; font-weight: 500; padding: 8px; flex: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; line-height: 1.3; }
+        .p-cat { font-size: 10px; color: #888; padding: 0 8px; }
+        .p-price { font-size: 13px; font-weight: bold; color: var(--primary); padding: 5px 8px 8px; text-align: right; }
 
-        .product-grid { flex: 1; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; padding-bottom: 70px; align-content: flex-start; }
-        .prod-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.1); cursor: pointer; display: flex; flex-direction: column; height: 100px; border: 1px solid #eee; position: relative; transition: 0.1s; }
-        .prod-card:active { transform: scale(0.98); }
-        .prod-color { height: 35px; }
-        .prod-info { padding: 8px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
-        .prod-name { font-size: 13px; font-weight: 500; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        .prod-price { font-size: 12px; color: #666; font-weight: bold; margin-top: auto; }
+        /* Ticket Side (Mobile: Bottom Sheet style) */
+        .ticket-wrap { width: 35%; max-width: 300px; background: white; border-left: 1px solid #ddd; display: flex; flex-direction: column; }
+        @media (max-width: 600px) {
+           .ticket-wrap { display: none; } /* On very small screens, hide ticket list or make it a drawer? For now let's keep it simple or hide it. 
+           Wait, user wants to see ticket. Let's make it 30% width. */
+        }
 
-        /* TICKET VIEW (Overlay) */
-        #view-ticket { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f5f5f5; z-index: 40; display: none; flex-direction: column; }
-        .ticket-header { background: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; font-weight: bold; }
-        .ticket-list { flex: 1; overflow-y: auto; padding: 10px; padding-bottom: 80px; }
-        .cart-item { background: white; padding: 12px; margin-bottom: 8px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .item-info h4 { margin: 0 0 4px 0; font-size: 14px; }
-        .item-info p { margin: 0; font-size: 12px; color: #888; }
-        .qty-control { display: flex; align-items: center; gap: 15px; }
-        .btn-qty { font-size: 20px; color: var(--primary); padding: 5px; cursor: pointer; }
+        .ticket { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .ticket-head { padding: 10px; background: #f9f9f9; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; }
+        .ticket-list { flex: 1; overflow-y: auto; padding: 0; }
+        .ticket-empty { padding: 20px; text-align: center; color: #999; font-size: 13px; font-style: italic; }
+        
+        .t-row { padding: 8px 10px; border-bottom: 1px solid #f5f5f5; display: flex; justify-content: space-between; align-items: flex-start; }
+        .t-name { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+        .t-meta { font-size: 11px; color: #666; }
+        .t-amt { font-weight: bold; font-size: 13px; }
+        .qty { display: flex; align-items: center; background: #f0f0f0; border-radius: 12px; margin-top: 4px; width: fit-content; }
+        .qty-btn { border: none; background: none; padding: 2px 8px; font-size: 14px; cursor: pointer; color: #555; }
+        .qty-val { font-size: 12px; font-weight: bold; min-width: 16px; text-align: center; }
 
-        /* CHARGE BUTTON */
-        .charge-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: var(--primary); color: white; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 50; }
-        .charge-label { font-size: 12px; opacity: 0.8; }
-        .charge-amount { font-size: 18px; font-weight: bold; }
+        .charge-bar { height: 60px; background: var(--primary); color: white; display: flex; align-items: center; padding: 0; cursor: pointer; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); z-index: 20; }
+        .charge-info { flex: 1; padding-left: 15px; }
+        .btn-main { background: rgba(0,0,0,0.1); border: none; color: white; height: 100%; padding: 0 25px; font-size: 16px; font-weight: bold; cursor: pointer; margin-left: auto; }
+        .btn-main:active { background: rgba(0,0,0,0.2); }
 
-        /* --- ITEMS PAGE --- */
-        .tabs { display: flex; background: white; border-bottom: 1px solid #eee; flex-shrink: 0; }
-        .tab { flex: 1; text-align: center; padding: 14px; font-weight: 500; color: #666; cursor: pointer; border-bottom: 3px solid transparent; }
-        .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+        /* ITEMS / LISTS */
+        .card { background: white; margin: 10px; padding: 10px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        .s-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 5px; }
+        .hint { font-size: 12px; color: #888; }
+        .btn-outline { border: 1px solid var(--primary); color: var(--primary); background: white; padding: 6px 12px; border-radius: 4px; font-size: 13px; cursor: pointer; }
+        
+        .row-item, .row-cat, .row-rec { padding: 12px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .row-item:last-child { border: none; }
+        .row-title { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
+        .chip { background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #555; margin-right: 5px; }
+        .right { text-align: right; font-size: 12px; }
 
-        .item-content { flex: 1; overflow-y: auto; padding: 10px; }
-        .inv-item { background: white; padding: 15px; margin-bottom: 5px; border-radius: 4px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .cat-item { background: white; padding: 15px; margin-bottom: 8px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--accent); box-shadow: 0 1px 2px rgba(0,0,0,0.05); cursor: pointer; }
+        /* TABS */
+        .tab { display: flex; border-bottom: 1px solid #ddd; background: white; }
+        .tab button { flex: 1; padding: 12px; background: none; border: none; border-bottom: 3px solid transparent; cursor: pointer; font-weight: 500; color: #666; }
+        .tab button.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-        .fab { position: fixed; bottom: 80px; right: 20px; width: 56px; height: 56px; background: #8bc34a; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; z-index: 60; }
+        /* OVERLAYS / FORMS */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 200; display: none; justify-content: center; align-items: flex-end; }
+        .overlay.show { display: flex; }
+        .ov-panel { background: white; width: 100%; max-width: 500px; border-radius: 12px 12px 0 0; display: flex; flex-direction: column; max-height: 90vh; animation: slideUp 0.2s; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .ov-head { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .ov-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #888; }
+        .ov-body { padding: 20px; overflow-y: auto; flex: 1; }
+        .ov-foot { padding: 15px; border-top: 1px solid #eee; display: flex; justify-content: flex-end; gap: 10px; }
+        
+        .form .fg { margin-bottom: 15px; }
+        .form label { display: block; font-size: 12px; font-weight: bold; color: #666; margin-bottom: 5px; }
+        .form input, .form select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 15px; box-sizing: border-box; }
+        .form input:focus { border-color: var(--primary); outline: none; }
+        .form-row { display: flex; gap: 10px; }
+        .form-row .fg { flex: 1; }
+        
+        .btn { padding: 10px 20px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-danger { background: #e53935; color: white; }
+        .btn-ghost { background: #eee; color: #333; }
 
-        /* --- FORMS (Full Screen) --- */
-        .form-page { background: #f5f5f5; padding: 15px; overflow-y: auto; flex: 1; }
-        .form-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; font-size: 12px; color: #666; margin-bottom: 5px; font-weight: bold; }
-        .form-input { width: 100%; padding: 10px 0; border: none; border-bottom: 1px solid #ddd; font-size: 16px; outline: none; background: transparent; }
-        .form-input:focus { border-bottom-color: var(--primary); }
+        /* TOAST */
+        .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #323232; color: white; padding: 10px 20px; border-radius: 50px; font-size: 13px; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; white-space: nowrap; }
+        .toast.show { opacity: 1; bottom: 100px; }
 
-        .color-picker { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-        .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        .color-dot.selected { border-color: #333; transform: scale(1.1); }
-
-        /* --- RECEIPTS --- */
-        .receipt-card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 4px; border-left: 4px solid var(--primary); box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative; }
-        .btn-trash { position: absolute; bottom: 10px; right: 10px; color: #e53935; cursor: pointer; padding: 5px; }
-
-        /* --- MODALS --- */
-        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 200; display: none; justify-content: center; align-items: center; }
-        .modal { background: white; width: 85%; max-width: 320px; border-radius: 8px; overflow: hidden; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .btn-sm { padding: 10px 20px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; margin-left: 10px; }
-        .btn-cancel { background: #eee; }
-        .btn-ok { background: var(--primary); color: white; }
-
-        /* Receipt Preview */
-        .receipt-paper { background: white; padding: 20px; font-family: monospace; text-align: center; border: 1px solid #eee; margin-bottom: 10px; }
-        .r-line { border-bottom: 1px dashed #000; margin: 10px 0; }
-        .r-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
-
-        /* Scanner */
-        #scanner-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 300; display: none; flex-direction: column; }
-        .close-scan { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; z-index: 301; }
-
-        #customToast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #323232; color: white; padding: 10px 24px; border-radius: 50px; font-size: 13px; z-index: 1000; transition: 0.3s; opacity: 0; pointer-events: none; }
-        #customToast.show { opacity: 1; }
-
-        /* Category Detail View */
-        .cat-detail-view { display: none; flex-direction: column; height: 100%; background: #f9f9f9; }
-        .cat-detail-header { padding: 15px; background: white; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; font-weight: bold; color: var(--primary); }
-        .cat-actions { padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .btn-action { background: white; border: 1px solid var(--primary); color: var(--primary); padding: 12px; border-radius: 6px; font-weight: bold; text-align: center; cursor: pointer; }
-        .assign-list { max-height: 300px; overflow-y: auto; margin-bottom: 15px; border: 1px solid #eee; }
-        .assign-item { padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+        /* SCANNER */
+        #scanner-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 300; display: none; flex-direction: column; justify-content: center; }
+        .close-scan { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; z-index: 301; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
@@ -132,7 +144,7 @@
   <div id="drawerBackdrop" class="drawer-backdrop"></div>
   <div id="drawer" class="drawer">
     <div class="drawer-head">
-      <b>GreenPOS</b><br><small>Google Sheets • Ks</small>
+      <b style="font-size:18px">GreenPOS</b><br><small>Google Sheets • Ks</small>
     </div>
     <div class="drawer-list">
       <div class="drawer-item active" data-screen="pos"><i class="fa-solid fa-cash-register"></i>POS (Sales)</div>
@@ -152,511 +164,22 @@
   </div>
 
   <div class="content">
-    <!-- POS -->
     <div id="scr-pos" class="screen active">
-      <div class="s-head">
-        <span>Current Ticket</span>
-        <small id="lblTicketInfo">0 items</small>
-      </div>
       <div class="pos-top">
         <select id="filterCat">
-          <option value="">All categories</option>
+          <option value="">All</option>
         </select>
         <div class="search-wrap">
-          <input id="txtSearch" placeholder="Search / barcode" />
+          <input id="txtSearch" class="search-input" placeholder="Search / barcode" />
+          <button id="btnScan" class="barcode-btn"><i class="fa-solid fa-barcode"></i></button>
         </div>
       </div>
+      
       <div class="pos-main">
         <div id="gridItems" class="grid"></div>
-        <div class="ticket-wrap">
-          <div class="ticket">
-            <div class="ticket-head">
-              <span>Ticket</span>
-              <span id="lblTicketTotal" style="font-size:12px">Ks 0</span>
-            </div>
-            <div id="ticketList" class="ticket-list">
-              <div class="ticket-empty">Tap item to add to ticket.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="charge-bar">
-        <div class="charge-info">
-          <b id="lblChargeTotal">Ks 0</b><br/>
-          <span id="lblChargeItems">0 items</span>
-        </div>
-        <button id="btnCharge" class="btn-main">
-          <span>Charge</span>
-          <span id="lblChargeCount" style="font-size:12px">(0)</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- ITEMS -->
-    <div id="scr-items" class="screen">
-      <div class="s-head">
-        <span>Items &amp; Categories</span>
-        <small id="lblItemsCount">0 items</small>
-      </div>
-      <div class="tab">
-        <button id="tabItems" class="active">Items</button>
-        <button id="tabCats">Categories</button>
+        
+        <div class="ticket-wrap" style="display:none" id="ticketPanel">
+             </div>
       </div>
 
-      <div id="tabItemsPane">
-        <div class="card">
-          <div class="s-head" style="margin:0 0 6px">
-            <span class="hint">Tap item to edit.</span>
-            <button id="btnNewItem" class="btn-outline"><i class="fa-solid fa-plus"></i>New</button>
-          </div>
-          <div id="listItems"></div>
-        </div>
-      </div>
-
-      <div id="tabCatsPane" style="display:none">
-        <div class="card">
-          <div class="s-head" style="margin:0 0 6px">
-            <span class="hint">Tap category to edit.</span>
-            <button id="btnNewCat" class="btn-outline"><i class="fa-solid fa-plus"></i>New</button>
-          </div>
-          <div id="listCats"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- RECEIPTS -->
-    <div id="scr-receipts" class="screen">
-      <div class="s-head">
-        <span>Receipts</span>
-        <small>Last 50 sales</small>
-      </div>
-      <div class="card">
-        <div class="hint" style="margin-bottom:6px">Tap to view / delete.</div>
-        <div id="listReceipts"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ITEM FORM -->
-<div id="ovItem" class="overlay">
-  <div class="ov-panel">
-    <div class="ov-head">
-      <b id="ovItemTitle">New Item</b>
-      <button class="ov-close" data-close="ovItem">&times;</button>
-    </div>
-    <div class="ov-body">
-      <div class="form">
-        <div class="fg">
-          <label>Name</label>
-          <input id="fName" />
-        </div>
-        <div class="fg">
-          <label>Category</label>
-          <input id="fCat" list="dlCats" />
-          <datalist id="dlCats"></datalist>
-        </div>
-        <div class="form-row">
-          <div class="fg">
-            <label>Cost (Ks)</label>
-            <input id="fCost" type="number" step="1" />
-          </div>
-          <div class="fg">
-            <label>Price (Ks)</label>
-            <input id="fPrice" type="number" step="1" />
-          </div>
-        </div>
-        <div class="fg">
-          <label>Barcode</label>
-          <input id="fBarcode" />
-        </div>
-        <div id="lblMargin" class="hint"></div>
-      </div>
-    </div>
-    <div class="ov-foot">
-      <button id="btnDelItem" class="btn btn-danger" style="display:none">Delete</button>
-      <button id="btnSaveItem" class="btn btn-primary">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- CATEGORY FORM -->
-<div id="ovCat" class="overlay">
-  <div class="ov-panel">
-    <div class="ov-head">
-      <b id="ovCatTitle">Category</b>
-      <button class="ov-close" data-close="ovCat">&times;</button>
-    </div>
-    <div class="ov-body">
-      <div class="form">
-        <div class="fg">
-          <label>Name</label>
-          <input id="cName" />
-        </div>
-        <div class="fg">
-          <label>Color</label>
-          <input id="cColor" type="color" />
-        </div>
-      </div>
-    </div>
-    <div class="ov-foot">
-      <button id="btnDelCat" class="btn btn-danger" style="margin-right:auto">Delete</button>
-      <button id="btnSaveCat" class="btn btn-primary">Save</button>
-    </div>
-  </div>
-</div>
-
-<!-- RECEIPT VIEW -->
-<div id="ovRec" class="overlay">
-  <div class="ov-panel">
-    <div class="ov-head">
-      <b id="ovRecTitle">Receipt</b>
-      <button class="ov-close" data-close="ovRec">&times;</button>
-    </div>
-    <div class="ov-body" id="ovRecBody"></div>
-    <div class="ov-foot">
-      <button id="btnDelRec" class="btn btn-danger">Delete</button>
-      <button class="btn btn-ghost" data-close="ovRec">Close</button>
-    </div>
-  </div>
-</div>
-
-<div id="toast" class="toast"></div>
-
-<script>
-const API_BASE="https://script.google.com/macros/s/AKfycbzHeJbtkgUuxdzhGFgkPyiZRitGV7cq6KLWtDYDdUgVgZZcv9HVL-QZ51tK1InxKTu7/exec";
-const CURRENCY="Ks ";
-
-let items=[],cats=[],sales=[],ticket=[];
-let currentItemRow=null,currentCatRow=null,currentSaleRow=null;
-
-const $=id=>document.getElementById(id);
-function toast(msg,ms=1800){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),ms);}
-function money(v){return CURRENCY+(Number(v)||0).toFixed(0);}
-async function api(action, body = {}) {
-  // GET actions → no CORS preflight
-  if (action === "getData" || action === "getSales") {
-    const url = API_BASE + "?action=" + encodeURIComponent(action);
-    const res = await fetch(url);
-    const j = await res.json();
-    if (!j.success) throw new Error(j.error || "API");
-    return j.data;
-  }
-
-  // POST actions → simple CORS (text/plain)
-  const res = await fetch(API_BASE, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ ...body, action })
-  });
-  const j = await res.json();
-  if (!j.success) throw new Error(j.error || "API");
-  return j.data;
-}
-
-
-/* drawer + screen */
-function openDrawer(){ $("drawer").classList.add("open");$("drawerBackdrop").classList.add("open"); }
-function closeDrawer(){ $("drawer").classList.remove("open");$("drawerBackdrop").classList.remove("open"); }
-function setScreen(name){
-  ["pos","items","receipts"].forEach(s=>$("scr-"+s).classList.remove("active"));
-  $("scr-"+name).classList.add("active");
-  document.querySelectorAll(".drawer-item[data-screen]").forEach(el=>el.classList.toggle("active",el.dataset.screen===name));
-  $("topTitle").textContent=name==="pos"?"Ticket":name==="items"?"Items":"Receipts";
-  $("topSub").textContent=name==="pos"?"POS":name==="items"?"Inventory":"History";
-  closeDrawer();
-}
-
-/* render helpers */
-function catColor(name){const c=cats.find(x=>(x.Name||"")===name);return c&&c.Color?c.Color:"#43a047";}
-function calcMargin(c,p){c=Number(c);p=Number(p);if(!p||isNaN(c)||isNaN(p))return null;return ((p-c)/p*100).toFixed(1);}
-
-function renderFilters(){
-  const sel=$("filterCat"),cur=sel.value;sel.innerHTML="<option value=''>All categories</option>";
-  cats.forEach(c=>{const o=document.createElement("option");o.value=c.Name||"";o.textContent=c.Name||"";sel.appendChild(o);});
-  sel.value=cur;
-  const dl=$("dlCats");dl.innerHTML="";cats.forEach(c=>{const o=document.createElement("option");o.value=c.Name||"";dl.appendChild(o);});
-}
-
-function renderGrid(){
-  const g=$("gridItems");g.innerHTML="";
-  const fc=$("filterCat").value, q=$("txtSearch").value.trim().toLowerCase();
-  const list=items.filter(i=>{
-    const inCat=!fc||i.Category===fc;
-    const s=((i.Name||"")+(i.Barcode||"")).toLowerCase();
-    return inCat&&(!q||s.includes(q));
-  });
-  if(!list.length){
-    const d=document.createElement("div");d.className="empty-search";d.textContent="No items.";
-    if(q){const b=document.createElement("button");b.textContent="Add new item?";b.onclick=()=>openItemForm(null,{Name:q,Barcode:q});d.appendChild(document.createElement("br"));d.appendChild(b);}
-    g.appendChild(d);return;
-  }
-  list.forEach(i=>{
-    const card=document.createElement("div");card.className="p-card";card.onclick=()=>addTicket(i);
-    card.innerHTML=`<div class="p-strip" style="background:${catColor(i.Category)}"></div>
-      <div class="p-name">${i.Name||""}</div>
-      <div class="p-cat">${i.Category||"Uncategorized"}</div>
-      <div class="p-price">${money(i.Price||0)}</div>`;
-    g.appendChild(card);
-  });
-}
-
-function renderTicket(){
-  const list=$("ticketList");list.innerHTML="";
-  if(!ticket.length){list.innerHTML='<div class="ticket-empty">Tap item to add to ticket.</div>'; }
-  else{
-    ticket.forEach((l,idx)=>{
-      const row=document.createElement("div");row.className="t-row";
-      row.innerHTML=`<div>
-        <div class="t-name">${l.name}</div>
-        <div class="t-meta">${money(l.price)} × ${l.qty}</div>
-      </div>`;
-      const q=document.createElement("div");q.className="qty";
-      const m=document.createElement("button");m.className="qty-btn";m.textContent="-";
-      m.onclick=()=>{updateTicket(idx,l.qty-1);};
-      const v=document.createElement("span");v.className="qty-val";v.textContent=l.qty;
-      const p=document.createElement("button");p.className="qty-btn";p.textContent="+";
-      p.onclick=()=>{updateTicket(idx,l.qty+1);};
-      const amt=document.createElement("div");amt.className="t-amt";amt.textContent=money(l.price*l.qty);
-      q.append(m,v,p);row.appendChild(q);row.appendChild(amt);list.appendChild(row);
-    });
-  }
-  const totalQty=ticket.reduce((s,l)=>s+l.qty,0);
-  const total=ticket.reduce((s,l)=>s+l.qty*l.price,0);
-  $("lblTicketInfo").textContent=totalQty+" items";
-  $("lblTicketTotal").textContent=money(total);
-  $("lblChargeTotal").textContent=money(total);
-  $("lblChargeItems").textContent=totalQty+" items";
-  $("lblChargeCount").textContent="("+totalQty+")";
-}
-
-function addTicket(i){
-  const price=Number(i.Price)||0;if(!price){toast("No price on item");return;}
-  const ex=ticket.find(l=>l.row===i.rowIndex);
-  if(ex)ex.qty++;else ticket.push({row:i.rowIndex,name:i.Name||"",price,qty:1});
-  renderTicket();
-}
-function updateTicket(idx,qty){if(qty<=0)ticket.splice(idx,1);else ticket[idx].qty=qty;renderTicket();}
-
-function renderItems(){
-  const c=$("listItems");c.innerHTML="";
-  if(!items.length){c.innerHTML='<div class="hint">No items. Add new.</div>';return;}
-  items.forEach(i=>{
-    const row=document.createElement("div");row.className="row-item";row.onclick=()=>openItemForm(i.rowIndex);
-    const main=document.createElement("div");main.className="row-main";
-    main.innerHTML=`<div class="row-title">${i.Name||""}</div>
-      <div><span class="chip">${i.Category||"Uncategorized"}</span>${i.Barcode?`<span class="chip"><i class="fa-solid fa-barcode"></i>&nbsp;${i.Barcode}</span>`:""}</div>`;
-    const r=document.createElement("div");r.className="right";
-    const m=calcMargin(i.Cost,i.Price);
-    r.innerHTML=`<b>${money(i.Price||0)}</b><br><span>${i.Cost?("Cost "+money(i.Cost)):""} ${m?("• "+m+"%"):''}</span>`;
-    row.append(main,r);c.appendChild(row);
-  });
-  $("lblItemsCount").textContent=items.length+" items";
-}
-
-function renderCats(){
-  const c=$("listCats");c.innerHTML="";
-  if(!cats.length){c.innerHTML='<div class="hint">No categories.</div>';return;}
-  cats.forEach(cat=>{
-    const row=document.createElement("div");row.className="row-cat";row.onclick=()=>openCatForm(cat.rowIndex);
-    const main=document.createElement("div");main.className="row-main";
-    const count=items.filter(i=>i.Category===cat.Name).length;
-    main.innerHTML=`<div class="row-title">${cat.Name||""}</div>
-      <div class="hint">${count} items</div>`;
-    const color=document.createElement("div");color.style.width="18px";color.style.height="18px";color.style.borderRadius="6px";color.style.background=cat.Color||"#43a047";color.style.border="1px solid #ddd";
-    row.append(main,color);c.appendChild(row);
-  });
-}
-
-function renderReceipts(){
-  const c=$("listReceipts");c.innerHTML="";
-  if(!sales.length){c.innerHTML='<div class="hint">No sales.</div>';return;}
-  sales.forEach(s=>{
-    const row=document.createElement("div");row.className="row-rec";row.onclick=()=>openRec(s.rowIndex);
-    const main=document.createElement("div");main.className="row-main";
-    main.innerHTML=`<div class="row-title">Invoice #${s.Invoice}</div><div class="hint">${s.DateStr||""}</div>`;
-    const r=document.createElement("div");r.className="right";r.innerHTML=`<b>${money(s.Total||0)}</b>`;
-    row.append(main,r);c.appendChild(row);
-  });
-}
-
-/* forms */
-function openItemForm(rowIndex=null,prefill={}){
-  currentItemRow=rowIndex;
-  $("ovItemTitle").textContent=rowIndex?"Edit Item":"New Item";
-  const ex=rowIndex?items.find(i=>i.rowIndex===rowIndex):null;
-  $("fName").value=ex?ex.Name:(prefill.Name||"");
-  $("fCat").value=ex?ex.Category:(prefill.Category||"");
-  $("fCost").value=ex?ex.Cost:"";
-  $("fPrice").value=ex?ex.Price:"";
-  $("fBarcode").value=ex?ex.Barcode:(prefill.Barcode||"");
-  $("btnDelItem").style.display=rowIndex?"inline-block":"none";
-  updateMarginLabel();
-  $("ovItem").classList.add("show");
-}
-function updateMarginLabel(){
-  const m=calcMargin($("fCost").value,$("fPrice").value);
-  $("lblMargin").textContent=m?("Margin: "+m+"%"):"";
-}
-async function saveItem(){
-  const data={
-    rowIndex:currentItemRow,
-    Name:$("fName").value.trim(),
-    Category:$("fCat").value.trim(),
-    Cost:$("fCost").value,
-    Price:$("fPrice").value,
-    Barcode:$("fBarcode").value.trim()
-  };
-  if(!data.Name){toast("Name required");return;}
-  // optimistic
-  if(currentItemRow){
-    const ex=items.find(i=>i.rowIndex===currentItemRow);
-    if(ex)Object.assign(ex,data);
-  }else{
-    const tempRow=Date.now();
-    items.push({...data,rowIndex:tempRow});
-  }
-  renderItems();renderGrid();toast("Saving item…");
-  try{
-    const saved=await api("saveItem",data);
-    const ex=items.find(i=>i.rowIndex===currentItemRow||(!currentItemRow&&i.Name===data.Name&&i.Barcode===data.Barcode));
-    if(ex)ex.rowIndex=saved.rowIndex;
-    renderItems();renderGrid();renderFilters();toast("Item saved");
-    closeOverlay("ovItem");
-  }catch(e){console.error(e);toast("Save error");}
-}
-
-async function deleteItem(){
-  if(!currentItemRow)return;
-  if(!confirm("Delete this item?"))return;
-  const r=currentItemRow;
-  items=items.filter(i=>i.rowIndex!==r);
-  renderItems();renderGrid();toast("Deleting…");
-  try{await api("deleteItem",{rowIndex:r});toast("Item deleted");}
-  catch(e){console.error(e);toast("Delete error");}
-  closeOverlay("ovItem");
-}
-
-function openCatForm(rowIndex=null){
-  currentCatRow=rowIndex;
-  const ex=rowIndex?cats.find(c=>c.rowIndex===rowIndex):null;
-  $("ovCatTitle").textContent=rowIndex?"Edit Category":"New Category";
-  $("cName").value=ex?ex.Name:"";
-  $("cColor").value=ex?ex.Color||"#43a047":"#43a047";
-  $("btnDelCat").style.display=rowIndex?"inline-block":"none";
-  $("ovCat").classList.add("show");
-}
-async function saveCat(){
-  const data={rowIndex:currentCatRow,Name:$("cName").value.trim(),Color:$("cColor").value||"#43a047"};
-  if(!data.Name){toast("Name required");return;}
-  if(currentCatRow){
-    const ex=cats.find(c=>c.rowIndex===currentCatRow);if(ex)Object.assign(ex,data);
-  }else{
-    const t=Date.now();cats.push({...data,rowIndex:t});
-  }
-  renderCats();renderGrid();renderFilters();toast("Saving…");
-  try{
-    const saved=await api("saveCategory",data);
-    const ex=cats.find(c=>c.rowIndex===currentCatRow||(!currentCatRow&&c.Name===data.Name));
-    if(ex)ex.rowIndex=saved.rowIndex;
-    renderCats();renderFilters();toast("Category saved");closeOverlay("ovCat");
-  }catch(e){console.error(e);toast("Save error");}
-}
-async function deleteCat(){
-  if(!currentCatRow)return;
-  if(!confirm("Delete this category?"))return;
-  const r=currentCatRow;
-  cats=cats.filter(c=>c.rowIndex!==r);
-  items.forEach(i=>{if(i.Category===$("cName").value)i.Category="";});
-  renderCats();renderItems();renderGrid();renderFilters();toast("Deleting…");
-  try{await api("deleteCategory",{rowIndex:r});toast("Category deleted");}
-  catch(e){console.error(e);toast("Delete error");}
-  closeOverlay("ovCat");
-}
-
-/* receipts */
-function openRec(rowIndex){
-  const s=sales.find(x=>x.rowIndex===rowIndex);if(!s)return;
-  currentSaleRow=rowIndex;
-  $("ovRecTitle").textContent="Invoice #"+s.Invoice;
-  let itemsList=[];try{itemsList=JSON.parse(s.ItemsJSON||"[]");}catch(e){}
-  const b=$("ovRecBody");b.innerHTML=`<div class="hint">Date: ${s.DateStr||""}</div><br>`;
-  if(!itemsList.length){b.innerHTML+='<div class="hint">No item detail.</div>'; }
-  else{
-    itemsList.forEach(l=>{
-      const d=document.createElement("div");d.className="t-row";
-      d.innerHTML=`<div>
-        <div class="t-name">${l.name||""}</div>
-        <div class="t-meta">${money(l.price)} × ${l.qty}</div>
-      </div>
-      <div class="t-amt">${money((l.price||0)*(l.qty||0))}</div>`;
-      b.appendChild(d);
-    });
-    b.innerHTML+='<hr style="margin-top:6px;border:none;border-top:1px solid #eee"/><div style="text-align:right;font-size:12px"><b>Total: '+money(s.Total||0)+'</b></div>';
-  }
-  $("ovRec").classList.add("show");
-}
-async function deleteRec(){
-  if(!currentSaleRow)return;
-  if(!confirm("Delete this receipt?"))return;
-  const r=currentSaleRow;
-  sales=sales.filter(s=>s.rowIndex!==r);renderReceipts();toast("Deleting…");
-  try{await api("deleteSale",{rowIndex:r});toast("Deleted");}
-  catch(e){console.error(e);toast("Delete error");}
-  closeOverlay("ovRec");
-}
-
-/* charge */
-async function charge(){
-  if(!ticket.length){toast("Ticket empty");return;}
-  if(!confirm("Confirm charge?"))return;
-  const itemsCopy=ticket.map(l=>({name:l.name,price:l.price,qty:l.qty}));
-  const total=ticket.reduce((s,l)=>s+l.qty*l.price,0);
-  toast("Saving sale…");
-  try{
-    const saved=await api("saveSale",{ItemsJSON:itemsCopy,Total:total});
-    sales.unshift({rowIndex:saved.rowIndex,Invoice:saved.Invoice,ItemsJSON:JSON.stringify(itemsCopy),Total:total,DateStr:saved.DateStr});
-    renderReceipts();toast("Sale saved");
-  }catch(e){console.error(e);toast("Save error");}
-  ticket=[];renderTicket();
-}
-
-/* init */
-async function loadAll(){
-  try{
-    const d=await api("getData");items=d.items||[];cats=d.categories||[];
-    renderFilters();renderGrid();renderItems();renderCats();
-    const s=await api("getSales");sales=s||[];renderReceipts();
-  }catch(e){console.error(e);toast("Load error");}
-}
-function closeOverlay(id){$(id).classList.remove("show");}
-
-/* events */
-window.addEventListener("load",()=>{
-  $("btnMenu").onclick=openDrawer;
-  $("drawerBackdrop").onclick=closeDrawer;
-  document.querySelectorAll(".drawer-item[data-screen]").forEach(el=>el.onclick=()=>setScreen(el.dataset.screen));
-  $("navExit").onclick=()=>{if(confirm("Exit app?"))window.close();};
-  $("filterCat").onchange=renderGrid;
-  $("txtSearch").oninput=renderGrid;
-  $("btnCharge").onclick=charge;
-  $("tabItems").onclick=()=>{ $("tabItems").classList.add("active");$("tabCats").classList.remove("active");$("tabItemsPane").style.display="";$("tabCatsPane").style.display="none";};
-  $("tabCats").onclick=()=>{ $("tabCats").classList.add("active");$("tabItems").classList.remove("active");$("tabCatsPane").style.display="";$("tabItemsPane").style.display="none";};
-  $("btnNewItem").onclick=()=>openItemForm();
-  $("btnSaveItem").onclick=saveItem;
-  $("btnDelItem").onclick=deleteItem;
-  $("fCost").oninput=updateMarginLabel;
-  $("fPrice").oninput=updateMarginLabel;
-  $("btnNewCat").onclick=()=>openCatForm();
-  $("btnSaveCat").onclick=saveCat;
-  $("btnDelCat").onclick=deleteCat;
-  $("btnDelRec").onclick=deleteRec;
-  document.querySelectorAll(".ov-close").forEach(b=>b.onclick=()=>closeOverlay(b.dataset.close));
-  loadAll();
-  if("serviceWorker" in navigator){navigator.serviceWorker.register("service-worker.js").catch(()=>{});}
-});
-</script>
-</body>
-</html>
-
-
+      
