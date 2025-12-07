@@ -49,34 +49,46 @@
         .pos-main { flex: 1; display: flex; overflow: hidden; background: #f0f2f5; }
         
         /* Product Grid (Left Side) */
-        .product-grid { flex: 1; overflow-y: auto; padding: 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(95px, 1fr)); gap: 8px; align-content: flex-start; padding-bottom: 90px; }
-        .p-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.1); cursor: pointer; display: flex; flex-direction: column; height: 105px; border: 1px solid #eee; }
+        /* Make items smaller to fit side-by-side with ticket */
+        .product-grid { flex: 1; overflow-y: auto; padding: 5px; display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 5px; align-content: flex-start; padding-bottom: 90px; }
+        .p-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.1); cursor: pointer; display: flex; flex-direction: column; height: 90px; border: 1px solid #eee; }
         .p-card:active { transform: scale(0.95); }
-        .p-strip { height: 5px; }
-        .p-name { font-size: 12px; font-weight: 600; padding: 6px; flex: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.2; }
-        .p-cat { font-size: 9px; color: #888; padding: 0 6px; }
-        .p-price { font-size: 13px; font-weight: bold; color: var(--primary); padding: 4px 6px 6px; text-align: right; }
+        .p-strip { height: 4px; }
+        .p-name { font-size: 11px; font-weight: 600; padding: 5px; flex: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.2; }
+        .p-cat { font-size: 9px; color: #888; padding: 0 5px; }
+        .p-price { font-size: 11px; font-weight: bold; color: var(--primary); padding: 2px 5px 5px; text-align: right; }
 
-        /* Ticket Side Panel (Right Side) */
-        .ticket-wrap { width: 40%; min-width: 140px; max-width: 350px; background: white; border-left: 1px solid #ddd; display: flex; flex-direction: column; z-index: 30; height: 100%; }
-        @media (max-width: 600px) { .ticket-wrap { display: none; } }
+        /* Ticket Side Panel (Right Side) - FIXED VISIBILITY */
+        .ticket-wrap { 
+            width: 38%; 
+            min-width: 130px; 
+            max-width: 300px; 
+            background: white; 
+            border-left: 1px solid #ddd; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 30; 
+            height: 100%;
+            /* Removed display:none media query */
+        }
 
         .ticket { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .ticket-head { padding: 10px; background: #f9f9f9; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-weight: bold; font-size: 13px; }
+        .ticket-head { padding: 8px; background: #f9f9f9; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-weight: bold; font-size: 12px; }
         .ticket-list { flex: 1; overflow-y: auto; padding: 0; padding-bottom: 90px; background: #fff; }
-        .ticket-empty { padding: 20px; text-align: center; color: #999; font-size: 12px; font-style: italic; margin-top: 50px;}
+        .ticket-empty { padding: 20px; text-align: center; color: #999; font-size: 11px; font-style: italic; margin-top: 50px;}
         
-        .t-row { padding: 8px; border-bottom: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 5px; position:relative; }
+        .t-row { padding: 6px; border-bottom: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 2px; }
         .t-top { display: flex; justify-content: space-between; align-items: flex-start; }
-        .t-name { font-size: 13px; font-weight: 600; width: 100%; line-height: 1.2; }
-        .t-meta { font-size: 11px; color: #666; margin-top: 2px; }
-        .t-ctrl { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+        .t-name { font-size: 12px; font-weight: 600; width: 100%; line-height: 1.2; }
+        .t-meta { font-size: 10px; color: #666; }
+        
+        .t-ctrl { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
         .qty { display: flex; align-items: center; background: #f0f0f0; border-radius: 12px; }
-        .qty-btn { border: none; background: none; padding: 4px 10px; font-size: 16px; cursor: pointer; color: #555; display: flex; align-items: center; justify-content: center; }
-        .qty-val { font-size: 13px; font-weight: bold; min-width: 20px; text-align: center; }
-        .t-amt { font-weight: bold; font-size: 13px; color: var(--text); }
+        .qty-btn { border: none; background: none; padding: 2px 8px; font-size: 14px; cursor: pointer; color: #555; }
+        .qty-val { font-size: 12px; font-weight: bold; min-width: 15px; text-align: center; }
+        .t-amt { font-weight: bold; font-size: 12px; color: var(--text); }
 
-        /* NEW FLOATING CHARGE BUTTON */
+        /* FLOATING CHARGE BUTTON */
         .charge-container { position: absolute; bottom: 20px; left: 0; width: 100%; display: flex; justify-content: center; pointer-events: none; z-index: 60; }
         .charge-btn { pointer-events: auto; background: var(--primary); color: white; border-radius: 50px; padding: 12px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 15px; cursor: pointer; transition: transform 0.1s; border: none; min-width: 200px; justify-content: center; }
         .charge-btn:active { transform: scale(0.95); }
@@ -95,7 +107,7 @@
         .right { text-align: right; font-size: 12px; }
 
         /* History Grouping */
-        .group-header { background: #e8f5e9; padding: 8px 12px; font-size: 12px; font-weight: bold; color: var(--primary-dark); border-bottom: 1px solid #c8e6c9; margin-top: 0; sticky: top; }
+        .group-header { background: #e8f5e9; padding: 8px 12px; font-size: 12px; font-weight: bold; color: var(--primary-dark); border-bottom: 1px solid #c8e6c9; margin-top: 0; position: sticky; top:0; }
 
         /* TABS */
         .tab { display: flex; border-bottom: 1px solid #ddd; background: white; }
@@ -354,7 +366,7 @@
 <div id="toast" class="toast"></div>
 
 <script>
-// YOUR LINK (Do not change)
+// YOUR LINK
 const API_BASE="https://script.google.com/macros/s/AKfycby9RbMARs_vmsnU50gjuu9pZWo8ja1L2E9QCKzFEr_8FIeKN7csvJL9emYqpF7oNF0KHQ/exec";
 const CURRENCY="Ks ";
 
@@ -470,7 +482,7 @@ function addTicket(i){
   if(ex)ex.qty++;else ticket.push({row:i.rowIndex,name:i.Name||"",price,qty:1});
   renderTicket();
 }
-function updateTicket(idx,qty){if(qty<=0)ticket.splice(idx,1);else ticket[idx].qty=qty;renderTicket();}
+function updateTicket(idx,qty){if(qty<=0)ticket.splice(idx,1);else ticket[idx].qty=qty;renderTicket(); }
 
 /* FORMS - ITEMS */
 function renderItems(){
@@ -576,7 +588,6 @@ function renderReceipts(){
   let lastDate = "";
   
   sales.forEach(s=>{
-    // Date Grouping logic (Assumes format "M/D/YYYY, H:MM:SS" or similar)
     const dateOnly = s.DateStr.split(",")[0]; 
     if(dateOnly !== lastDate) {
         const header = document.createElement("div");
@@ -599,7 +610,6 @@ function openRec(rowIndex){
   $("ovRecTitle").textContent="Invoice #"+s.Invoice;
   let list=[]; try{list=JSON.parse(s.ItemsJSON);}catch(e){}
   
-  // Format for history receipt view (Ready for Screenshot)
   let html=`
     <h3 style="margin:0 0 10px 0; text-align:center; font-weight:900; letter-spacing:1px; text-transform:uppercase;">MY SHOP</h3>
     <div style="text-align:center; font-size:12px; color:#555; margin-bottom:15px;">
@@ -663,7 +673,6 @@ async function charge(){
   const tempInv = "INV-" + Math.floor(100000 + Math.random() * 900000);
   const dateStr = now.toLocaleDateString() + ", " + now.toLocaleTimeString();
 
-  // Add to Sales list UI
   sales.unshift({
       rowIndex: Date.now(),
       Invoice: tempInv,
@@ -673,7 +682,6 @@ async function charge(){
   });
   renderReceipts();
 
-  // Show Receipt Modal
   $("rcpDate").textContent = dateStr;
   $("rcpInv").textContent = tempInv;
   $("rcpTotal").textContent = money(total);
@@ -692,10 +700,8 @@ async function charge(){
   });
   $("ovReceiptModal").classList.add("show");
 
-  // Clear Ticket
   ticket=[]; renderTicket();
 
-  // Save to Sheet
   try{
       const saved=await api("saveSale",{ItemsJSON:itemsCopy,Total:total});
       sales[0].Invoice=saved.Invoice;
@@ -734,7 +740,7 @@ function startScanner() {
       toast("Item not found");
     }
   }, (errorMessage) => {
-    // ignore parse error
+    // ignore
   }).catch(err => {
     console.error(err);
     alert("Camera permission failed?");
@@ -755,13 +761,37 @@ function stopScanner() {
   }
 }
 
+/* LOAD DATA */
+async function loadAll(){
+    try {
+        const d = await api("getData");
+        if(d) {
+            items = d.items || [];
+            cats = d.categories || [];
+            renderFilters();
+            renderGrid();
+            renderItems();
+            renderCats();
+            toast("Data Loaded");
+        }
+        const s = await api("getSales");
+        if(s) {
+            sales = s || [];
+            renderReceipts();
+        }
+    } catch(e) {
+        console.error(e);
+        toast("Connection Failed. Retrying...");
+    }
+}
+
 /* INIT */
 window.addEventListener("load",()=>{
   $("btnMenu").onclick=openDrawer;
   $("drawerBackdrop").onclick=closeDrawer;
   document.querySelectorAll(".drawer-item[data-screen]").forEach(el=>el.onclick=()=>setScreen(el.dataset.screen));
   
-  // BACK KEY CONFIRM LOGIC
+  // Back Key
   history.pushState(null, null, location.href);
   window.onpopstate = function () {
       if(confirm("Exit Application?")) {
@@ -797,14 +827,8 @@ window.addEventListener("load",()=>{
   document.querySelectorAll(".ov-close").forEach(b=>b.onclick=()=>closeOverlay(b.dataset.close));
   document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>closeOverlay(b.dataset.close));
 
-  toast("Loading data...");
-  api("getData").then(d=>{
-      items=d.items||[];cats=d.categories||[];
-      renderFilters();renderGrid();renderItems();renderCats();
-      toast("Ready");
-  }).catch(()=>{toast("Offline / Error");});
-  
-  api("getSales").then(s=>{sales=s||[];renderReceipts();});
+  toast("Loading...");
+  loadAll();
 });
 </script>
 </body>
