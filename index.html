@@ -39,46 +39,80 @@
         .screen.active { display: flex; }
 
         /* POS SCREEN STYLES */
-        .pos-top-bar { padding: 8px 10px; background: white; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 3px rgba(0,0,0,0.05); z-index: 20; }
-        .cat-selector { border: 1px solid #ddd; padding: 8px; border-radius: 4px; background: white; width: 40%; max-width: 150px;}
+        .pos-top-bar { padding: 8px 10px; background: white; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 3px rgba(0,0,0,0.05); z-index: 20; flex-shrink: 0; }
+        .cat-selector { border: 1px solid #ddd; padding: 8px; border-radius: 4px; background: white; width: 35%; max-width: 120px; font-size: 13px;}
         .search-wrap { flex: 1; position: relative; display: flex; align-items: center; background: #f1f1f1; border-radius: 20px; padding: 0 10px; border: 1px solid #ddd; }
         .search-input { width: 100%; padding: 10px; border: none; background: transparent; outline: none; font-size: 14px; }
         .barcode-btn { font-size: 20px; color: #666; padding: 5px; cursor: pointer; margin-left: 5px; }
         .barcode-btn:active { color: var(--primary); }
 
-        .pos-main { flex: 1; display: flex; overflow: hidden; background: #f0f2f5; }
+        .pos-main { flex: 1; display: flex; overflow: hidden; background: #f0f2f5; position: relative; }
         
-        /* Product Grid (Left Side) */
-        .product-grid { flex: 1; overflow-y: auto; padding: 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; align-content: flex-start; padding-bottom: 70px; }
-        .p-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.1); cursor: pointer; display: flex; flex-direction: column; height: 100px; border: 1px solid #eee; }
+        /* Product Grid (Left Side) - IMPORTANT FIX HERE */
+        .product-grid { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 8px; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); 
+            gap: 8px; 
+            align-content: flex-start; 
+            /* Added extra padding so items can scroll above the button */
+            padding-bottom: 120px; 
+        }
+        .p-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.1); cursor: pointer; display: flex; flex-direction: column; height: 95px; border: 1px solid #eee; }
         .p-card:active { transform: scale(0.95); }
-        .p-strip { height: 5px; }
-        .p-name { font-size: 12px; font-weight: 600; padding: 6px; flex: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.2; }
-        .p-cat { font-size: 9px; color: #888; padding: 0 6px; }
-        .p-price { font-size: 12px; font-weight: bold; color: var(--primary); padding: 4px 6px 6px; text-align: right; }
+        .p-strip { height: 4px; }
+        .p-name { font-size: 11px; font-weight: 600; padding: 5px; flex: 1; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; line-height: 1.2; }
+        .p-cat { font-size: 9px; color: #888; padding: 0 5px; }
+        .p-price { font-size: 11px; font-weight: bold; color: var(--primary); padding: 2px 5px 5px; text-align: right; }
 
-        /* Ticket Side Panel */
-        .ticket-wrap { width: 40%; min-width: 140px; max-width: 350px; background: white; border-left: 1px solid #ddd; display: flex; flex-direction: column; z-index: 30; height: 100%; }
+        /* Ticket Side Panel (Right Side) */
+        .ticket-wrap { 
+            width: 38%; 
+            min-width: 130px; 
+            max-width: 350px; 
+            background: white; 
+            border-left: 1px solid #ddd; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 30; 
+            height: 100%;
+            flex-shrink: 0; 
+        }
+
         .ticket { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .ticket-head { padding: 10px; background: #f9f9f9; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-weight: bold; font-size: 13px; }
-        .ticket-list { flex: 1; overflow-y: auto; padding: 0; padding-bottom: 60px; background: #fff; }
-        .ticket-empty { padding: 20px; text-align: center; color: #999; font-size: 12px; font-style: italic; margin-top: 50px;}
+        .ticket-head { padding: 8px; background: #f9f9f9; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-weight: bold; font-size: 12px; }
+        .ticket-list { flex: 1; overflow-y: auto; padding: 0; padding-bottom: 90px; background: #fff; }
+        .ticket-empty { padding: 20px; text-align: center; color: #999; font-size: 11px; font-style: italic; margin-top: 50px;}
         
-        /* Ticket Row Item */
-        .t-row { padding: 8px; border-bottom: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 5px; position:relative; }
+        .t-row { padding: 6px; border-bottom: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 2px; }
         .t-top { display: flex; justify-content: space-between; align-items: flex-start; }
-        .t-name { font-size: 13px; font-weight: 600; width: 100%; line-height: 1.2; }
-        .t-meta { font-size: 11px; color: #666; margin-top: 2px; }
-        .t-ctrl { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+        .t-name { font-size: 12px; font-weight: 600; width: 100%; line-height: 1.2; }
+        .t-meta { font-size: 10px; color: #666; }
+        
+        .t-ctrl { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
         .qty { display: flex; align-items: center; background: #f0f0f0; border-radius: 12px; }
-        .qty-btn { border: none; background: none; padding: 4px 10px; font-size: 16px; cursor: pointer; color: #555; display: flex; align-items: center; justify-content: center; }
-        .qty-val { font-size: 13px; font-weight: bold; min-width: 20px; text-align: center; }
-        .t-amt { font-weight: bold; font-size: 13px; color: var(--text); }
+        .qty-btn { border: none; background: none; padding: 2px 8px; font-size: 14px; cursor: pointer; color: #555; }
+        .qty-val { font-size: 12px; font-weight: bold; min-width: 15px; text-align: center; }
+        .t-amt { font-weight: bold; font-size: 12px; color: var(--text); }
 
-        /* Charge Bar */
-        .charge-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; background: var(--primary); color: white; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 50; }
-        .charge-info { text-align: center; line-height: 1; }
-        .btn-main { background: transparent; border: none; color: white; font-weight: bold; font-size: 15px; }
+        /* FLOATING CHARGE BUTTON - FIXED POSITIONING */
+        .charge-container { 
+            position: absolute; 
+            bottom: 20px; 
+            left: 0; 
+            /* Restrict width to avoid covering ticket panel completely if desired, or keep 100% of pos-main */
+            width: 100%; 
+            display: flex; 
+            justify-content: center; 
+            pointer-events: none; 
+            z-index: 100; /* High Z-Index to stay on top */
+        }
+        .charge-btn { pointer-events: auto; background: var(--primary); color: white; border-radius: 50px; padding: 12px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 15px; cursor: pointer; transition: transform 0.1s; border: none; min-width: 180px; justify-content: center; }
+        .charge-btn:active { transform: scale(0.95); }
+        .charge-txt { font-weight: bold; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .charge-badge { background: rgba(255,255,255,0.25); padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; min-width: 50px; text-align: center; }
 
         /* GENERAL LISTS */
         .card { background: white; margin: 10px; padding: 10px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
@@ -90,6 +124,9 @@
         .row-title { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
         .chip { background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 10px; color: #555; margin-right: 5px; }
         .right { text-align: right; font-size: 12px; }
+
+        /* History Grouping */
+        .group-header { background: #e8f5e9; padding: 8px 12px; font-size: 12px; font-weight: bold; color: var(--primary-dark); border-bottom: 1px solid #c8e6c9; margin-top: 0; position: sticky; top:0; }
 
         /* TABS */
         .tab { display: flex; border-bottom: 1px solid #ddd; background: white; }
@@ -179,13 +216,10 @@
         </div>
       </div>
       
-      <div class="charge-bar">
-        <div class="charge-info">
-          <b id="lblChargeTotal">Ks 0</b><br/>
-          <span id="lblChargeItems" style="font-size:11px; opacity:0.8">0 items</span>
-        </div>
-        <button id="btnCharge" class="btn-main">
-          Charge
+      <div class="charge-container">
+        <button id="btnCharge" class="charge-btn">
+            <span class="charge-txt">Charge</span>
+            <span id="lblChargeBadge" class="charge-badge">Ks 0</span>
         </button>
       </div>
     </div>
@@ -302,9 +336,12 @@
       <b id="ovRecTitle">Receipt</b>
       <button class="ov-close" data-close="ovRec">&times;</button>
     </div>
-    <div class="ov-body" id="ovRecBody"></div>
+    <div id="historyRcpContent" style="background:white; padding:10px;">
+        <div id="ovRecBody"></div>
+    </div>
     <div class="ov-foot">
-      <button id="btnDelRec" class="btn btn-danger">Delete</button>
+      <button class="btn btn-danger" style="margin-right:auto" onclick="deleteRec()">Delete</button>
+      <button class="btn btn-primary" onclick="downloadHistoryJPG()">Save JPG</button>
       <button class="btn btn-ghost" data-close="ovRec">Close</button>
     </div>
   </div>
@@ -360,21 +397,16 @@ const $=id=>document.getElementById(id);
 function toast(msg,ms=1800){const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),ms);}
 function money(v){return CURRENCY+(Number(v)||0).toFixed(0);}
 
-/* API */
+/* API - ALWAYS USE POST TO AVOID CACHING */
 async function api(action, body = {}) {
   try {
-      if (action === "getData" || action === "getSales") {
-        const url = API_BASE + "?action=" + encodeURIComponent(action);
-        const res = await fetch(url);
-        const j = await res.json();
-        return j.data;
-      }
       const res = await fetch(API_BASE, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({ ...body, action })
       });
       const j = await res.json();
+      if(!j.success) throw new Error(j.error);
       return j.data;
   } catch(e) {
       console.error(e); throw e;
@@ -454,8 +486,7 @@ function renderTicket(){
   const total=ticket.reduce((s,l)=>s+l.qty*l.price,0);
   
   $("lblTicketTotal").textContent=money(total);
-  $("lblChargeTotal").textContent=money(total);
-  $("lblChargeItems").textContent=totalQty+" items";
+  $("lblChargeBadge").textContent=money(total);
 }
 
 /* LOGIC */
@@ -465,7 +496,7 @@ function addTicket(i){
   if(ex)ex.qty++;else ticket.push({row:i.rowIndex,name:i.Name||"",price,qty:1});
   renderTicket();
 }
-function updateTicket(idx,qty){if(qty<=0)ticket.splice(idx,1);else ticket[idx].qty=qty;renderTicket();}
+function updateTicket(idx,qty){if(qty<=0)ticket.splice(idx,1);else ticket[idx].qty=qty;renderTicket(); }
 
 /* FORMS - ITEMS */
 function renderItems(){
@@ -563,32 +594,62 @@ async function deleteCat(){
   await api("deleteCategory",{rowIndex:r});
 }
 
-/* SALES/RECEIPTS */
+/* SALES/RECEIPTS GROUPING */
 function renderReceipts(){
   const c=$("listReceipts");c.innerHTML="";
   if(!sales.length){c.innerHTML='<div class="hint">No sales yet.</div>';return;}
+  
+  let lastDate = "";
+  
   sales.forEach(s=>{
+    const dateOnly = s.DateStr.split(",")[0]; 
+    if(dateOnly !== lastDate) {
+        const header = document.createElement("div");
+        header.className = "group-header";
+        header.textContent = dateOnly;
+        c.appendChild(header);
+        lastDate = dateOnly;
+    }
+
     const row=document.createElement("div");row.className="row-rec";row.onclick=()=>openRec(s.rowIndex);
-    row.innerHTML=`<div><div class="row-title">#${s.Invoice}</div><div class="hint">${s.DateStr}</div></div>
+    row.innerHTML=`<div><div class="row-title">#${s.Invoice}</div><div class="hint">${s.DateStr.split(",")[1] || ""}</div></div>
       <div class="right"><b>${money(s.Total)}</b></div>`;
     c.appendChild(row);
   });
 }
+
 function openRec(rowIndex){
   const s=sales.find(x=>x.rowIndex===rowIndex);if(!s)return;
   currentSaleRow=rowIndex;
   $("ovRecTitle").textContent="Invoice #"+s.Invoice;
   let list=[]; try{list=JSON.parse(s.ItemsJSON);}catch(e){}
-  const b=$("ovRecBody");b.innerHTML=`<div class="hint" style="text-align:center;margin-bottom:10px">${s.DateStr}</div>`;
+  
+  let html=`
+    <h3 style="margin:0 0 10px 0; text-align:center; font-weight:900; letter-spacing:1px; text-transform:uppercase;">MY SHOP</h3>
+    <div style="text-align:center; font-size:12px; color:#555; margin-bottom:15px;">
+        <span>${s.DateStr}</span><br>
+        Invoice: ${s.Invoice}
+    </div>
+    <div style="border-top:1px dashed #ddd; margin-bottom:10px;"></div>
+  `;
+  
   list.forEach(l=>{
-      b.innerHTML+=`<div class="t-row" style="padding:5px 0">
-        <div>${l.name}<br><small>${l.qty} x ${money(l.price)}</small></div>
+      html+=`<div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:13px;">
+        <div>${l.name}<br><small style="color:#666">x${l.qty}</small></div>
         <div>${money(l.qty*l.price)}</div>
       </div>`;
   });
-  b.innerHTML+=`<hr style="border:0;border-top:1px dashed #ccc;margin:10px 0"><div class="right"><b>Total: ${money(s.Total)}</b></div>`;
+  
+  html+=`<div style="border-top:1px solid #333; margin:10px 0;"></div>
+        <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:14px;">
+            <span>TOTAL</span>
+            <span>${money(s.Total)}</span>
+        </div>`;
+        
+  $("ovRecBody").innerHTML=html;
   $("ovRec").classList.add("show");
 }
+
 async function deleteRec(){
   if(!currentSaleRow||!confirm("Delete receipt?"))return;
   const r=currentSaleRow; sales=sales.filter(s=>s.rowIndex!==r);
@@ -596,20 +657,36 @@ async function deleteRec(){
   await api("deleteSale",{rowIndex:r});
 }
 
-/* NEW: CHARGE FUNCTION WITH MODAL */
+async function downloadHistoryJPG() {
+    saveElementAsJpg("historyRcpContent");
+}
+
+/* HELPER: Save any element as JPG */
+async function saveElementAsJpg(elId) {
+    toast("Saving Image...");
+    const el = $(elId);
+    if(!el) return;
+    try {
+        const canvas = await html2canvas(el, { scale: 2, backgroundColor: "#ffffff" });
+        const link = document.createElement('a');
+        link.download = 'Receipt_'+Date.now()+'.jpg';
+        link.href = canvas.toDataURL("image/jpeg", 0.9);
+        link.click();
+        toast("Image Downloaded");
+    } catch(e) { console.error(e); toast("Error saving image"); }
+}
+
+/* CHARGE FUNCTION WITH MODAL */
 async function charge(){
   if(!ticket.length){toast("Ticket is empty");return;}
-  // NO CONFIRM BOX HERE
   
   const itemsCopy=ticket.map(l=>({name:l.name,price:l.price,qty:l.qty}));
   const total=ticket.reduce((s,l)=>s+l.qty*l.price,0);
   const now = new Date();
   
-  // Optimistic ID
   const tempInv = "INV-" + Math.floor(100000 + Math.random() * 900000);
   const dateStr = now.toLocaleDateString() + ", " + now.toLocaleTimeString();
 
-  // Add to Sales list UI
   sales.unshift({
       rowIndex: Date.now(),
       Invoice: tempInv,
@@ -619,7 +696,6 @@ async function charge(){
   });
   renderReceipts();
 
-  // Show Receipt Modal
   $("rcpDate").textContent = dateStr;
   $("rcpInv").textContent = tempInv;
   $("rcpTotal").textContent = money(total);
@@ -638,10 +714,8 @@ async function charge(){
   });
   $("ovReceiptModal").classList.add("show");
 
-  // Clear Ticket
   ticket=[]; renderTicket();
 
-  // Save to Sheet
   try{
       const saved=await api("saveSale",{ItemsJSON:itemsCopy,Total:total});
       sales[0].Invoice=saved.Invoice;
@@ -658,24 +732,7 @@ function closeReceiptModal() {
 }
 
 async function downloadReceiptJPG() {
-    toast("Saving Image...");
-    const el = $("receiptContent");
-    if(!el) return;
-    
-    try {
-        const canvas = await html2canvas(el, {
-            scale: 2,
-            backgroundColor: "#ffffff"
-        });
-        const link = document.createElement('a');
-        link.download = 'Receipt-' + Date.now() + '.jpg';
-        link.href = canvas.toDataURL("image/jpeg", 0.9);
-        link.click();
-        toast("Image Downloaded");
-    } catch(e) {
-        console.error(e);
-        toast("Error saving image");
-    }
+    saveElementAsJpg("receiptContent");
 }
 
 /* SCANNER LOGIC */
@@ -697,7 +754,7 @@ function startScanner() {
       toast("Item not found");
     }
   }, (errorMessage) => {
-    // ignore parse error
+    // ignore
   }).catch(err => {
     console.error(err);
     alert("Camera permission failed?");
@@ -718,11 +775,46 @@ function stopScanner() {
   }
 }
 
+/* LOAD DATA */
+async function loadAll(){
+    try {
+        const d = await api("getData");
+        if(d) {
+            items = d.items || [];
+            cats = d.categories || [];
+            renderFilters();
+            renderGrid();
+            renderItems();
+            renderCats();
+            toast("Data Loaded");
+        }
+        const s = await api("getSales");
+        if(s) {
+            sales = s || [];
+            renderReceipts();
+        }
+    } catch(e) {
+        console.error(e);
+        toast("Loading Failed. Retrying...");
+    }
+}
+
 /* INIT */
 window.addEventListener("load",()=>{
   $("btnMenu").onclick=openDrawer;
   $("drawerBackdrop").onclick=closeDrawer;
   document.querySelectorAll(".drawer-item[data-screen]").forEach(el=>el.onclick=()=>setScreen(el.dataset.screen));
+  
+  // Back Key
+  history.pushState(null, null, location.href);
+  window.onpopstate = function () {
+      if(confirm("Exit Application?")) {
+          history.back();
+      } else {
+          history.pushState(null, null, location.href);
+      }
+  };
+  
   $("navExit").onclick=()=>{if(confirm("Exit?"))window.close();};
   
   $("filterCat").onchange=renderGrid;
@@ -749,14 +841,8 @@ window.addEventListener("load",()=>{
   document.querySelectorAll(".ov-close").forEach(b=>b.onclick=()=>closeOverlay(b.dataset.close));
   document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>closeOverlay(b.dataset.close));
 
-  toast("Loading data...");
-  api("getData").then(d=>{
-      items=d.items||[];cats=d.categories||[];
-      renderFilters();renderGrid();renderItems();renderCats();
-      toast("Ready");
-  }).catch(()=>{toast("Offline / Error");});
-  
-  api("getSales").then(s=>{sales=s||[];renderReceipts();});
+  toast("Loading...");
+  loadAll();
 });
 </script>
 </body>
