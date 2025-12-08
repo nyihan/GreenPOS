@@ -82,7 +82,7 @@
 
         .ticket { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         .ticket-head { padding: 8px; background: #f9f9f9; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-weight: bold; font-size: 12px; }
-        .ticket-list { flex: 1; overflow-y: auto; padding: 0; padding-bottom: 90px; background: #fff; }
+        .ticket-list { flex: 1; overflow-y: auto; padding: 0; padding-bottom: 150px; background: #fff; }
         .ticket-empty { padding: 20px; text-align: center; color: #999; font-size: 11px; font-style: italic; margin-top: 50px;}
         
         .t-row { padding: 6px; border-bottom: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 2px; }
@@ -98,14 +98,14 @@
 
         /* FLOATING CHARGE BUTTON */
         .charge-container { 
-            position: absolute; 
+            position: fixed; 
             bottom: 20px; 
             left: 0; 
             width: 100%; 
             display: flex; 
             justify-content: center; 
             pointer-events: none; 
-            z-index: 100;
+            z-index: 1000;
         }
         .charge-btn { pointer-events: auto; background: var(--primary); color: white; border-radius: 50px; padding: 12px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 15px; cursor: pointer; transition: transform 0.1s; border: none; min-width: 180px; justify-content: center; }
         .charge-btn:active { transform: scale(0.95); }
