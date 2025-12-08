@@ -48,7 +48,7 @@
 
         .pos-main { flex: 1; display: flex; overflow: hidden; background: #f0f2f5; position: relative; }
         
-        /* Product Grid (Left Side) - IMPORTANT FIX HERE */
+        /* Product Grid (Left Side) */
         .product-grid { 
             flex: 1; 
             overflow-y: auto; 
@@ -57,7 +57,6 @@
             grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); 
             gap: 8px; 
             align-content: flex-start; 
-            /* Added extra padding so items can scroll above the button */
             padding-bottom: 120px; 
         }
         .p-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.1); cursor: pointer; display: flex; flex-direction: column; height: 95px; border: 1px solid #eee; }
@@ -97,17 +96,16 @@
         .qty-val { font-size: 12px; font-weight: bold; min-width: 15px; text-align: center; }
         .t-amt { font-weight: bold; font-size: 12px; color: var(--text); }
 
-        /* FLOATING CHARGE BUTTON - FIXED POSITIONING */
+        /* FLOATING CHARGE BUTTON */
         .charge-container { 
             position: absolute; 
             bottom: 20px; 
             left: 0; 
-            /* Restrict width to avoid covering ticket panel completely if desired, or keep 100% of pos-main */
             width: 100%; 
             display: flex; 
             justify-content: center; 
             pointer-events: none; 
-            z-index: 100; /* High Z-Index to stay on top */
+            z-index: 100;
         }
         .charge-btn { pointer-events: auto; background: var(--primary); color: white; border-radius: 50px; padding: 12px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 15px; cursor: pointer; transition: transform 0.1s; border: none; min-width: 180px; justify-content: center; }
         .charge-btn:active { transform: scale(0.95); }
@@ -340,7 +338,6 @@
         <div id="ovRecBody"></div>
     </div>
     <div class="ov-foot">
-      <!-- FIXED: add id="btnDelRec" -->
       <button id="btnDelRec" class="btn btn-danger" style="margin-right:auto" onclick="deleteRec()">Delete</button>
       <button class="btn btn-primary" onclick="downloadHistoryJPG()">Save JPG</button>
       <button class="btn btn-ghost" data-close="ovRec">Close</button>
@@ -443,7 +440,11 @@ function renderGrid(){
   const fc=$("filterCat").value, q=$("txtSearch").value.trim().toLowerCase();
   const list=items.filter(i=>{
     const inCat=!fc||i.Category===fc;
-    const s=((i.Name||"")+(i.Barcode||"")).toLowerCase();
+    // --- FIX FOR TYPE ERROR ---
+    const name = String(i.Name || "");
+    const barcode = String(i.Barcode || "");
+    const s=(name + barcode).toLowerCase();
+    // --------------------------
     return inCat&&(!q||s.includes(q));
   });
   if(!list.length){
